@@ -17,7 +17,7 @@
     
     <!-- En-tête de la page -->
     <header>
-        <img id="logo" src="images/logo.png" alt="logo">
+        <img id="logo" src="logo.png" alt="logo">
         <h1> Calendrier formation inter-entreprises </h1>
     </header>
 

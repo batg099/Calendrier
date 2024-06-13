@@ -1,3 +1,8 @@
+body
+{
+    background-color: white;
+}
+
 h1
 {
     text-align: center;
@@ -18,11 +23,6 @@ h1
     margin-left: 10%;
 }
 
-#libre
-{
-    margin-left: 20%;
-}
-
 h2
 {
     margin-left: 20%;
@@ -41,4 +41,41 @@ th, td {
     padding: 15px;
     border:1px solid black;
     text-align: center;
+}
+
+.search{
+    margin-left: 20%;
+    margin-right: 20%;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    padding:4px;
+    border-radius: 3px;
+    background: #cda4fb;
+
+}
+
+#libre{
+    font-size: 16px;
+    font-family: 'Lexend',sans-serif;
+    color:#333333;
+    outline: none;
+    border:none;
+    background: transparent;
+
+}
+
+.dep{
+    margin-left: 20%;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    padding:4px;
+    border-radius: 3px;
+    background: #cda4fb;
+}
+
+#button
+{
+    margin-left: 20%;
 }

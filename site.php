@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" media="screen and (max-width:600px)" href="filmmobile.css">
     -->
     <link rel="stylesheet" type="text/css" media="screen" href="learneo.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 <body>
     
@@ -24,13 +25,18 @@
 
     <!-- A ameliorer car horrible -->
     <form  method="post">
-        <input  type="text" id="libre" name="libre"  placeholder="Recherche Libre" size="74" >
+        <div class="search">
+            <span class="material-symbols-outlined"> search </span>
+            <input  type="text" id="libre" name="libre"  placeholder="Recherche Libre" size="74" >
+        
 <?php
     // On ouvre le fichier
     $open = fopen("liste.csv","r");
     $menu = [];
     $departement = '';
     $calendrier = [];
+    $libre ='';
+    $resultat='';
     $i=0;
     // Tant qu'on trouve une ligne (hors ligne 0 et 1) dans notre fichier, on la prend 
     while ( ($data = fgetcsv($open,2000,";")) == true && $i>=0  ){
@@ -47,21 +53,28 @@
         }
         $i++;
     };
+
+    print
     print '<select name="resultat">';
-    print '<option value="" disabled selected>--Sélectionnez une option--</option>';
+    print '<option value="" disabled selected>--Département--</option>';
     foreach($menu as $value){
         print '<option value="' . htmlspecialchars($value). '">' . htmlspecialchars($value)  . '</option>';
     }
     print '</select>';
 
 ?>
-        <input  type="submit" value="Envoyer">
+
+        <input   type="submit" value="Envoyer">
+        </div>
     </form>
 
     <h2 > <?php  
     if(isset($_POST["resultat"])){
         $resultat = $_POST["resultat"];
         echo htmlspecialchars($_POST["resultat"]); 
+    }
+    if(isset($_POST["libre"])){
+        $libre = $_POST["libre"];
     }
         ?>
     </h2>
@@ -87,40 +100,75 @@
                             if($i>=2){ 
                                 $departement = $data[41];
                                 // On vérifie si le departement est deja present dans le menu
-                                if(isset($_POST["resultat"])){
+                                if(isset($_POST["resultat"]) && empty($resultat)==false){
                                     if($departement == $resultat){
                                         echo "<tr>";
                                         echo "<td>". $data[1] . "</td>";
                                         echo "<td>". $data[2] . "</td>";
                                         echo "<td>". $data[7] . " heures"."</td>";
 
-                                        $mois_temp = $data[4];
+                                        $mois_temp = $data[3];
                                         $mois_temp = explode("/",$mois_temp);
                                         $mois_temp = $mois_temp[1];
                                         if( $mois_temp == $mois){
-                                            echo "<td>". $data[4] ."</td>";
+                                            echo "<td>". $data[3] ."</td>";
                                             echo "<td>"."/ "."</td>";
                                             echo "<td>"."/ "."</td>";
                                         }
                                         else{
                                             echo "<td>"."/ "."</td>";
                                             if($mois_temp == ($mois+1) ){
-                                                echo "<td>". $data[4] ."</td>";
+                                                echo "<td>". $data[3] ."</td>";
                                                 echo "<td>"."/ "."</td>";
                                                 
                                             }
                                             else{
                                                 echo "<td>"." /"."</td>";
                                                 if($mois_temp == ($mois+2) ){
-                                                    echo "<td>". $data[4] ."</td>";
+                                                    echo "<td>". $data[3] ."</td>";
                                                 }
                                                 else{
                                                     echo "<td>"." / "."</td>";
                                                 }
                                             }
                                         }
+                                        echo "</tr>";
+                                    }
+                                }
+                                else if(isset($_POST["libre"]) && empty($libre)==false){
+                                    //echo "mon resultat_1 est".$libre;
+                                    //echo "mon resultat_2 est".$data[2];
+                                    if (stripos($data[2], $libre) !== false || stripos($data[1], $libre) !== false || stripos($departement, $libre) !== false){
+                                        echo "<tr>";
+                                        echo "<td>". $data[1] . "</td>";
+                                        echo "<td>". $data[2] . "</td>";
+                                        echo "<td>". $data[7] . " heures"."</td>";
 
-
+                                        $mois_temp = $data[3];
+                                        $mois_temp = explode("/",$mois_temp);
+                                        $mois_temp = $mois_temp[1];
+                                        if( $mois_temp == $mois){
+                                            echo "<td>". $data[3] ."</td>";
+                                            echo "<td>"."/ "."</td>";
+                                            echo "<td>"."/ "."</td>";
+                                        }
+                                        else{
+                                            echo "<td>"."/ "."</td>";
+                                            if($mois_temp == ($mois+1) ){
+                                                echo "<td>". $data[3] ."</td>";
+                                                echo "<td>"."/ "."</td>";
+                                                
+                                            }
+                                            else{
+                                                echo "<td>"." /"."</td>";
+                                                if($mois_temp == ($mois+2) ){
+                                                    echo "<td>". $data[3] ."</td>";
+                                                }
+                                                else{
+                                                    echo "<td>"." / "."</td>";
+                                                }
+                                            }
+                                        }
                                         echo "</tr>";
                                     }
                                 }

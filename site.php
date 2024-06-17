@@ -54,17 +54,18 @@
         $i++;
     };
 
-    print
     print '<select name="resultat">';
     print '<option value="" disabled selected>--Département--</option>';
     foreach($menu as $value){
-        print '<option value="' . htmlspecialchars($value). '">' . htmlspecialchars($value)  . '</option>';
+        if($value != "PREPARATION" && $value != "TESTS"){
+            print '<option value="' . htmlspecialchars($value). '">' . htmlspecialchars($value)  . '</option>';
+        }
     }
     print '</select>';
 
 ?>
 
-        <input   type="submit" value="Envoyer">
+        <input   class="button" type="submit" value="Envoyer">
         </div>
     </form>
 
@@ -84,17 +85,113 @@
             <th>Référence</th>
             <th>Intitulé de la formation</th>
             <th>Durée</th>
-            <th>Mois en cours</th>
-            <th>Mois + 1 </th>
-            <th>Mois + 2</th>
+            <?php 
+                    $limite = 0;
+                    $date = new DateTimeImmutable();
+                    // On prend le mois (en String) et on le transforme en Int
+                    $mois = intval($date-> format("m"));
+                    function getMonthName($monthNumber) {
+                        $months = [
+                            1 => 'Janvier',
+                            2 => 'Février',
+                            3 => 'Mars',
+                            4 => 'Avril',
+                            5 => 'Mai',
+                            6 => 'Juin',
+                            7 => 'Juillet',
+                            8 => 'Août',
+                            9 => 'Septembre',
+                            10 => 'Octobre',
+                            11 => 'Novembre',
+                            13 => 'Décembre'
+                        ];
+                    
+                        return $months[$monthNumber] ?? 'Mois invalide'; // Renvoie le mois ou "Mois invalide" si le chiffre n'est pas valide
+                    }
+                    while($limite <= 2){
+                        echo "<th>".getMonthName($mois + $limite)."</th>";
+                        $limite = $limite + 1;
+                    }
+            ?>
         </tr>
                 <?php  
                         $i=0;
                         $open = fopen("liste.csv","r");
-                        $date = new DateTimeImmutable();
-                        $mois = $date-> format("m");
+                        $test=[0,0,0,0];
+                        $indice=0;
+                        $numero = 0;
+                        function tableau($data,$numero){
+                            $date = new DateTimeImmutable();
+                            $mois = intval($date-> format("m"));
+                            /*
+                            if($numero === 0){
+                                if(in_array($data[41],$test) == false){
+                                    echo "<tr>"."<td>"."/ "."</td>"."</tr>" ;
+                                    array_push($test,$data[41]);
+                                }
+                            }
+                            */
+                            echo "<tr>";
+                            echo "<td>". $data[1] . "</td>";
+                            echo "<td>". $data[2] . "</td>";
+                            echo "<td>". $data[7] . " heures"."</td>";
+
+                            $mois_temp = $data[3];
+                            $mois_temp = explode("/",$mois_temp);
+                            $mois_temp = $mois_temp[1];
+                            if( $mois_temp == $mois){
+                                echo "<td>". $data[3] ."</td>";
+                                echo "<td>"."/ "."</td>";
+                                echo "<td>"."/ "."</td>";
+                            }
+                            else{
+                                echo "<td>"."/ "."</td>";
+                                if($mois_temp == ($mois+1) ){
+                                    echo "<td>". $data[3] ."</td>";
+                                    echo "<td>"."/ "."</td>";
+                                    
+                                }
+                                else{
+                                    echo "<td>"." /"."</td>";
+                                    if($mois_temp == ($mois+2) ){
+                                        echo "<td>". $data[3] ."</td>";
+                                    }
+                                    else{
+                                        echo "<td>"." / "."</td>";
+                                    }
+                                }
+                            }
+                            echo "</tr>";
+                        }
+                        function array_sort_by_column(&$arr, $col, $dir = SORT_ASC)
+                        {
+                                                                    $sort_col = array();
+                                                                    foreach ($arr as $key => $row) {
+                                                                        $sort_col[$key] = $row[$col];
+                                                                    }
+                                                                    array_multisort($sort_col, $dir, $arr);
+                                                            }
+
+                        $tab=[];
+                        $tab_intitule=[];
                         // Tant qu'on trouve une ligne (hors ligne 0 et 1) dans notre fichier, on la prend 
                         while ( ($data = fgetcsv($open,2000,";")) == true && $i>=0  ){
+                            if($i>0){
+                                //if(in_array($data[1],$tab_intitule) == false){
+                                    array_push($tab,$data);
+                                    //array_push($tab_intitule,$data[1]);
+                                //}
+                                /*
+                                else{
+                                    foreach($data as $element){
+                                        if(array_search($element,$data)!=3 ){
+                                            $element="/";
+                                        }
+                                    }
+                                    array_push($tab,$data);
+                                }
+                                */
+                            }
                             // On considere que chaque element de la ligne est un element d'un tableau 
                             $ligne = str_getcsv($data[0],";");
                             if($i>=2){ 
@@ -102,79 +199,65 @@
                                 // On vérifie si le departement est deja present dans le menu
                                 if(isset($_POST["resultat"]) && empty($resultat)==false){
                                     if($departement == $resultat){
-                                        echo "<tr>";
-                                        echo "<td>". $data[1] . "</td>";
-                                        echo "<td>". $data[2] . "</td>";
-                                        echo "<td>". $data[7] . " heures"."</td>";
-
-                                        $mois_temp = $data[3];
-                                        $mois_temp = explode("/",$mois_temp);
-                                        $mois_temp = $mois_temp[1];
-                                        if( $mois_temp == $mois){
-                                            echo "<td>". $data[3] ."</td>";
-                                            echo "<td>"."/ "."</td>";
-                                            echo "<td>"."/ "."</td>";
-                                        }
-                                        else{
-                                            echo "<td>"."/ "."</td>";
-                                            if($mois_temp == ($mois+1) ){
-                                                echo "<td>". $data[3] ."</td>";
-                                                echo "<td>"."/ "."</td>";
-                                                
-                                            }
-                                            else{
-                                                echo "<td>"." /"."</td>";
-                                                if($mois_temp == ($mois+2) ){
-                                                    echo "<td>". $data[3] ."</td>";
-                                                }
-                                                else{
-                                                    echo "<td>"." / "."</td>";
-                                                }
-                                            }
-                                        }
-                                        echo "</tr>";
+                                        tableau($data,1);
                                     }
                                 }
                                 else if(isset($_POST["libre"]) && empty($libre)==false){
                                     //echo "mon resultat_1 est".$libre;
-                                    //echo "mon resultat_2 est".$data[2];
+                                    //echo "mon resultat_2 est".$data[1];
                                     if (stripos($data[2], $libre) !== false || stripos($data[1], $libre) !== false || stripos($departement, $libre) !== false){
-                                        echo "<tr>";
-                                        echo "<td>". $data[1] . "</td>";
-                                        echo "<td>". $data[2] . "</td>";
-                                        echo "<td>". $data[7] . " heures"."</td>";
-
-                                        $mois_temp = $data[3];
-                                        $mois_temp = explode("/",$mois_temp);
-                                        $mois_temp = $mois_temp[1];
-                                        if( $mois_temp == $mois){
-                                            echo "<td>". $data[3] ."</td>";
-                                            echo "<td>"."/ "."</td>";
-                                            echo "<td>"."/ "."</td>";
+                                        //echo "mon resultat_2 est".$data[1];
+                                        //On verifie que "Test" n'est pas dans l'intitule
+                                        if(stripos($data[1], "TEST") === false){
+                                            tableau($data,1);
                                         }
-                                        else{
-                                            echo "<td>"."/ "."</td>";
-                                            if($mois_temp == ($mois+1) ){
-                                                echo "<td>". $data[3] ."</td>";
-                                                echo "<td>"."/ "."</td>";
-                                                
-                                            }
-                                            else{
-                                                echo "<td>"." /"."</td>";
-                                                if($mois_temp == ($mois+2) ){
-                                                    echo "<td>". $data[3] ."</td>";
-                                                }
-                                                else{
-                                                    echo "<td>"." / "."</td>";
-                                                }
-                                            }
-                                        }
-                                        echo "</tr>";
                                     }
-                                }
+                                } 
                             }
                             $i++;
                         }; 
+
+                        if(empty($libre)==true && empty($resultat)==true){
+                            array_sort_by_column($tab, 41);
+
+                            //Fonction qui sert à comparer les dates de debut dans notre dictionnaire
+                            function cmp($a, $b){
+                                $dateA = DateTime::createFromFormat('d/m/Y', $a[3]);
+                                $dateB = DateTime::createFromFormat('d/m/Y', $b[3]);
+                            
+                                if ($dateA == $dateB) {
+                                    return 0;
+                                }
+                            
+                                return ($dateA < $dateB) ? -1 : 1;
+                            }
+
+                            foreach($tab as $data){
+                                if (!isset($tabi[$data[41]])) {
+                                    $tabi[$data[41]] = [];
+                                }
+                               //echo "I am pushing\n";print_r($tabi[$data[41]]);
+                                array_push($tabi[$data[41]],$data);
+                            }
+                            
+                            foreach($tabi as $cle => $valeur){
+                                if( $cle !="PREPARATION"){
+                                    $test[$cle]=1;
+                                    if($cle !== 'AUTRES'){
+                                        echo "<tr>"."<td style='background-color:#cda4fb;'>".$valeur[0][41]."</td>"."</tr>" ;
+                                    }
+                                    // On trie le tableau associe a chaque cle en fonction des dates de debuts
+                                    usort($valeur, "cmp");
+                                    foreach($valeur as $ligne){
+                                        //echo "Moshi Moshi".$valeur[0][41];
+                                        if(stripos($ligne[2], "TEST") == false){
+                                            tableau($ligne,0);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        //print_r($tabi);
                         fclose($open);
                 ?>
    

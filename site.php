@@ -224,7 +224,9 @@
                                         if(empty($libre)==true && empty($resultat)==true){
                                             $test[$cle]=1;
                                             if($cle !== 'AUTRES'){
-                                                echo "<tr>"."<td style='background-color:#cda4fb;'>".$valeur[0][41]."</td>"."</tr>" ;
+                                                echo "</table>";
+                                                echo "<h2 style='background-color:#cda4fb;'>".$valeur[0][41]."</h2>" ;
+                                                echo "<table>";
                                             }
                                             // On trie le tableau associe a chaque cle en fonction des dates de debuts
                                             usort($valeur, "cmp");
@@ -279,6 +281,3 @@
 </body>
 
 </html>
-
-
-

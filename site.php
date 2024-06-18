@@ -134,7 +134,7 @@
                             echo "<tr>";
                             echo "<td>". $data[1] . "</td>";
                             echo "<td>". $data[2] . "</td>";
-                            echo "<td>". $data[7] . " heures"."</td>";
+                            echo "<td>". $data[7]." heures"."</td>";
 
                             $mois_temp = $data[3];
                             $mois_temp = explode("/",$mois_temp);
@@ -193,31 +193,10 @@
                                 */
                             }
                             // On considere que chaque element de la ligne est un element d'un tableau 
-                            $ligne = str_getcsv($data[0],";");
-                            if($i>=2){ 
-                                $departement = $data[41];
-                                // On vérifie si le departement est deja present dans le menu
-                                if(isset($_POST["resultat"]) && empty($resultat)==false){
-                                    if($departement == $resultat){
-                                        tableau($data,1);
-                                    }
-                                }
-                                else if(isset($_POST["libre"]) && empty($libre)==false){
-                                    //echo "mon resultat_1 est".$libre;
-                                    //echo "mon resultat_2 est".$data[1];
-                                    if (stripos($data[2], $libre) !== false || stripos($data[1], $libre) !== false || stripos($departement, $libre) !== false){
-                                        //echo "mon resultat_2 est".$data[1];
-                                        //On verifie que "Test" n'est pas dans l'intitule
-                                        if(stripos($data[1], "TEST") === false){
-                                            tableau($data,1);
-                                        }
-                                    }
-                                } 
-                            }
                             $i++;
                         }; 
 
-                        if(empty($libre)==true && empty($resultat)==true){
+                        
                             array_sort_by_column($tab, 41);
 
                             //Fonction qui sert à comparer les dates de debut dans notre dictionnaire
@@ -241,22 +220,48 @@
                             }
                             
                             foreach($tabi as $cle => $valeur){
-                                if( $cle !="PREPARATION"){
-                                    $test[$cle]=1;
-                                    if($cle !== 'AUTRES'){
-                                        echo "<tr>"."<td style='background-color:#cda4fb;'>".$valeur[0][41]."</td>"."</tr>" ;
-                                    }
-                                    // On trie le tableau associe a chaque cle en fonction des dates de debuts
-                                    usort($valeur, "cmp");
-                                    foreach($valeur as $ligne){
-                                        //echo "Moshi Moshi".$valeur[0][41];
-                                        if(stripos($ligne[2], "TEST") == false){
-                                            tableau($ligne,0);
+                                    if( $cle !="PREPARATION"){
+                                        if(empty($libre)==true && empty($resultat)==true){
+                                            $test[$cle]=1;
+                                            if($cle !== 'AUTRES'){
+                                                echo "<tr>"."<td style='background-color:#cda4fb;'>".$valeur[0][41]."</td>"."</tr>" ;
+                                            }
+                                            // On trie le tableau associe a chaque cle en fonction des dates de debuts
+                                            usort($valeur, "cmp");
+                                            foreach($valeur as $ligne){
+                                                //echo "Moshi Moshi".$valeur[0][41];
+                                                if(stripos($ligne[2], "TEST") == false){
+                                                    tableau($ligne,0);
+                                                }
+                                            }
+                                        }
+                                        else{
+                                            usort($valeur, "cmp");
+                                            foreach($valeur as $ligne){
+                                                $departement = $ligne[41];
+                                                if(isset($_POST["resultat"]) && empty($resultat)==false){
+                                                    if($departement == $resultat){
+                                                        tableau($ligne,1);
+                                                    }
+                                                }
+                                                else if(isset($_POST["libre"]) && empty($libre)==false){
+                                                    //echo "mon resultat_1 est".$libre;
+                                                    //echo "mon resultat_2 est".$data[1];
+                                                    if (stripos($ligne[2], $libre) !== false || stripos($ligne[1], $libre) !== false || stripos($departement, $ligne) !== false){
+                                                        //echo "mon resultat_2 est".$data[1];
+                                                        //On verifie que "Test" n'est pas dans l'intitule
+                                                        if(stripos($ligne[1], "TEST") === false){
+                                                            tableau($ligne,1);
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
-                                }
+                                
+
                             }
-                        }
+                        
                         //print_r($tabi);
                         fclose($open);
                 ?>

@@ -12,15 +12,26 @@
     <link rel="stylesheet" type="text/css" media="screen and (max-width:600px)" href="filmmobile.css">
     -->
     <link rel="stylesheet" type="text/css" media="screen" href="learneo.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 <body>
-    
+    <div class="block" >
     <!-- En-tête de la page -->
     <header>
         <img id="logo" src="logo.png" alt="logo">
         <h1> Calendrier formation inter-entreprises </h1>
+
+        <!-- On gere d'abord le telechargement du fichier -->
+        <form action="site.php" method="post" enctype="multipart/form-data" class="file">
+            <label class="test" for="file"> <span class="material-symbols-outlined"> upload_file </span>:</label>
+            <input style="display:none;"type="file" id="file" name="file">
+            <input type="submit" value="Télécharger">
+        </form>
+
     </header>
+
+
 
 
     <!-- A ameliorer car horrible -->
@@ -28,10 +39,14 @@
         <div class="search">
             <span class="material-symbols-outlined"> search </span>
             <input  type="text" id="libre" name="libre"  placeholder="Recherche Libre" size="74" >
-        
 <?php
     // On ouvre le fichier
-    $open = fopen("liste.csv","r");
+    if(isset($_FILES["file"])){
+        $open = fopen($_FILES['file']['name'],"r");
+    }
+    else{
+        $open = fopen("liste.csv","r");
+    }
     $menu = [];
     $departement = '';
     $calendrier = [];
@@ -68,6 +83,7 @@
         <input   class="button" type="submit" value="Envoyer">
         </div>
     </form>
+    
 
     <h2 > <?php  
     if(isset($_POST["resultat"])){
@@ -80,7 +96,6 @@
         ?>
     </h2>
 
-    <div>
     <table>
         <tr class="header">
             <th>Référence</th>
@@ -139,26 +154,26 @@
                             echo "<td>". $data[7]." heures"."</td>";
 
                             $mois_temp = $data[3][0];
-                            $mois_temp = explode("/",$mois_temp);
-                            $mois_temp = $mois_temp[1];
+                            $mois_temp_bis = explode("/",$mois_temp);
+                            $mois_temp = $mois_temp_bis[1];
                             if(count($data[3]) == 1){
 
                                 if( $mois_temp == $mois){
-                                    echo "<td>". $data[3][0] ."</td>";
+                                    echo "<td>". $mois_temp_bis[0] ."</td>";
                                     echo "<td>"."/ "."</td>";
                                     echo "<td>"."/ "."</td>";
                                 }
                                 else{
                                     echo "<td>"."/ "."</td>";
                                     if($mois_temp == ($mois+1) ){
-                                        echo "<td>". $data[3][0] ."</td>";
+                                        echo "<td>". $mois_temp_bis[0] ."</td>";
                                         echo "<td>"."/ "."</td>";
                                         
                                     }
                                     else{
                                         echo "<td>"." /"."</td>";
                                         if($mois_temp == ($mois+2) ){
-                                            echo "<td>". $data[3][0] ."</td>";
+                                            echo "<td>". $mois_temp_bis[0] ."</td>";
                                         }
                                         else{
                                             echo "<td>"." / "."</td>";
@@ -206,6 +221,8 @@
                                                 $mois_temp = $mois_temp[1];
                                                 //echo "My month is".$mois_temp;
                                             }
+                                            $chaine = explode("/",$chaine);
+                                            $chaine=$chaine[0];
                                             echo "<td>".$chaine."</td>";
                                         }
                                         
@@ -277,8 +294,8 @@
 
                             //Fonction qui sert à comparer les dates de debut dans notre dictionnaire
                             function cmp($a, $b){
-                                $dateA = DateTime::createFromFormat('d/m/Y', $a[3]);
-                                $dateB = DateTime::createFromFormat('d/m/Y', $b[3]);
+                                $dateA = DateTime::createFromFormat('d/m/Y', $a[3][0]);
+                                $dateB = DateTime::createFromFormat('d/m/Y', $b[3][0]);
                             
                                 if ($dateA == $dateB) {
                                     return 0;
@@ -300,12 +317,12 @@
                                         if(empty($libre)==true && empty($resultat)==true){
                                             $test[$cle]=1;
                                             if($cle !== 'AUTRES'){
-                                                echo "</table>";
-                                                echo "<h2 style='background-color:#cda4fb;'>".$valeur[0][41]."</h2>" ;
-                                                echo "<table>";
+                                                echo "<tr>";
+                                                echo "<td colspan='6' class='table-heading'>".$valeur[0][41]."</td>" ;
+                                                echo "</tr>";
                                             }
                                             // On trie le tableau associe a chaque cle en fonction des dates de debuts
-                                            //usort($valeur, "cmp");
+                                            usort($valeur, "cmp");
                                             foreach($valeur as $ligne){
                                                 //echo "Moshi Moshi".$valeur[0][41];
                                                 if(stripos($ligne[2], "TEST") == false){
@@ -314,7 +331,7 @@
                                             }
                                         }
                                         else{
-                                            //usort($valeur, "cmp");
+                                            usort($valeur, "cmp");
                                             foreach($valeur as $ligne){
                                                 $departement = $ligne[41];
                                                 if(isset($_POST["resultat"]) && empty($resultat)==false){
@@ -325,7 +342,7 @@
                                                 else if(isset($_POST["libre"]) && empty($libre)==false){
                                                     //echo "mon resultat_1 est".$libre;
                                                     //echo "mon resultat_2 est".$data[1];
-                                                    if (stripos($ligne[2], $libre) !== false || stripos($ligne[1], $libre) !== false || stripos($departement, $ligne) !== false){
+                                                    if (stripos($ligne[2], $libre) !== false || stripos($ligne[1], $libre) !== false || stripos($ligne[41], $libre) !== false){
                                                         //echo "mon resultat_2 est".$data[1];
                                                         //On verifie que "Test" n'est pas dans l'intitule
                                                         if(stripos($ligne[1], "TEST") === false){

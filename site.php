@@ -349,11 +349,6 @@
                                             }
                                         }
                                         else{
-                                            if($cle !== 'AUTRES'){
-                                                echo "<tr>";
-                                                echo "<td colspan='7' class='table-heading'>".$valeur[0][41]."</td>" ;
-                                                echo "</tr>";
-                                            }
                                             usort($valeur, "cmp");
                                             foreach($valeur as $ligne){
                                                 $departement = $ligne[41];

@@ -9,23 +9,27 @@ h1
     font-family : century gothic;
     font-size   : 3em;
     margin-top: 1%;
-    border: 2px solid black;
+    color:white;
     text-align: center;
     padding-top: 3%;
     padding-bottom: 3%;
-    background-color: #cda4fb;
+    background-color: #9d7eb8;
 }
 
 h2
 {
     font-family : monospace;
-    background-color: #cda4fb;
+    background-color: #9d7eb8;
+    color:white;
+    font-size:1.7em;
+    text-align: justify;
 }
 
 table{
     border:1px solid black;
     border-collapse: collapse;
     width:100%;
+    table-layout: auto;
 }
 th, td {
     padding: 11px;
@@ -35,11 +39,19 @@ th, td {
     font-family: roboto;
 }
 
+th{
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Prevents header from becoming transparent */
+    z-index: 100; /* Ensures the header stays on top of other content */
+}
+
 .table-heading {
-    font-size: 1.2em; /* Taille de police plus grande pour simuler un titre */
+    font-size: 1.4em; /* Taille de police plus grande pour simuler un titre */
     font-weight: bold; /* Texte en gras */
     font-family : monospace;
-    background-color: #cda4fb;
+    background-color: #9d7eb8;
+    color:white;
 }
 
 
@@ -51,7 +63,7 @@ th, td {
     align-items: center;
     padding:4px;
     border-radius: 3px;
-    background: #cda4fb;
+    background: #f9b674;
     top:50%;
 
 }
@@ -84,7 +96,4 @@ th, td {
     margin-right: 20%;
 }
 
-.test{
-    
-    
-}
+

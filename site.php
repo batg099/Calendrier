@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="learneo.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    
 </head>
 <body>
     <div class="block" >
@@ -21,13 +22,6 @@
     <header>
         <img id="logo" src="logo.png" alt="logo">
         <h1> Calendrier formation inter-entreprises </h1>
-
-        <!-- On gere d'abord le telechargement du fichier -->
-        <form action="site.php" method="post" enctype="multipart/form-data" class="file">
-            <label class="test" for="file"> <span class="material-symbols-outlined"> upload_file </span>:</label>
-            <input style="display:none;"type="file" id="file" name="file">
-            <input type="submit" value="Télécharger">
-        </form>
 
     </header>
 
@@ -70,7 +64,7 @@
     };
 
     print '<select name="resultat">';
-    print '<option value="" disabled selected>--Département--</option>';
+    print '<option style="text-align:center;" value="" disabled selected>Domaines</option>';
     foreach($menu as $value){
         if($value != "PREPARATION" && $value != "TESTS"){
             print '<option value="' . htmlspecialchars($value). '">' . htmlspecialchars($value)  . '</option>';
@@ -79,8 +73,11 @@
     print '</select>';
 
 ?>
-
-        <input   class="button" type="submit" value="Envoyer">
+        <button type="submit" style="border: 0; background: transparent">
+            <span class="material-symbols-outlined">
+                send
+            </span>
+        </button>
         </div>
     </form>
     
@@ -124,7 +121,7 @@
                     
                         return $months[$monthNumber] ?? 'Mois invalide'; // Renvoie le mois ou "Mois invalide" si le chiffre n'est pas valide
                     }
-                    while($limite <= 2){
+                    while($limite <= 3){
                         echo "<th>".getMonthName($mois + $limite)."</th>";
                         $limite = $limite + 1;
                     }
@@ -157,9 +154,9 @@
                             $mois_temp_bis = explode("/",$mois_temp);
                             $mois_temp = $mois_temp_bis[1];
                             if(count($data[3]) == 1){
-
                                 if( $mois_temp == $mois){
                                     echo "<td>". $mois_temp_bis[0] ."</td>";
+                                    echo "<td>"."/ "."</td>";
                                     echo "<td>"."/ "."</td>";
                                     echo "<td>"."/ "."</td>";
                                 }
@@ -168,15 +165,23 @@
                                     if($mois_temp == ($mois+1) ){
                                         echo "<td>". $mois_temp_bis[0] ."</td>";
                                         echo "<td>"."/ "."</td>";
+                                        echo "<td>"."/ "."</td>";
                                         
                                     }
                                     else{
                                         echo "<td>"." /"."</td>";
                                         if($mois_temp == ($mois+2) ){
                                             echo "<td>". $mois_temp_bis[0] ."</td>";
+                                            echo "<td>"." / "."</td>";
                                         }
                                         else{
                                             echo "<td>"." / "."</td>";
+                                            if($mois_temp == ($mois+3) ){
+                                                echo "<td>". $mois_temp_bis[0] ."</td>";
+                                            }
+                                            else{
+                                                    echo "<td>"." / "."</td>";
+                                            }
                                         }
                                     }
                                 }
@@ -188,7 +193,7 @@
                                     $mois_temp = explode("/", $value)[1];
                                     $mois_temp = (int)$mois_temp; // Convertir en entier pour les comparaisons
                                 
-                                    if ($mois_temp >= $mois && $mois_temp <= $mois + 2) {
+                                    if ($mois_temp >= $mois && $mois_temp <= $mois + 3) {
                                         if (!isset($tab_mois[$mois_temp])) {
                                             $tab_mois[$mois_temp] = [];
                                         }
@@ -197,7 +202,7 @@
                                 }
                                 
                                 // Ajouter des mois vides si nécessaire
-                                for ($i = $mois; $i <= $mois + 2; $i++) {
+                                for ($i = $mois; $i <= $mois + 3; $i++) {
                                     if (!isset($tab_mois[$i])) {
                                         $tab_mois[$i] = [];
                                     }
@@ -206,24 +211,36 @@
                                 //var_dump($tab_mois);
 
                                 foreach($tab_mois as $cle => $value){
-                                    if($nb <= 2){
+                                    if($nb <= 3){
                                         $chaine='';
                                         if($value == []){
                                             echo "<td>"." / "."</td>";
                                         }
                                         else{
                                             //print_r($value);
+                                            $nombre = 0; // Va servir à savoir s'il existe plusieurs dates dans le meme mois
                                             foreach($value as $date){
-                                                //echo "Je vais utiliser".$date;
-                                                $chaine = $chaine." ".$date;
+                                                // On compte le nombre de date qu'on a dans le mois
+                                                if($date != ''){
+                                                    $nombre = $nombre + 1;
+                                                }
+                                                // Si on a plus de 2 dates dans le mois, alors on affiche un +
+                                                if($nombre >= 2){
+                                                    $chaine = $chaine." | ".explode("/",$date)[0];
+                                                }
+                                                // On affiche un espace sinon
+                                                else{$chaine = $chaine." ".explode("/",$date)[0];}
+                                                
                                                 $mois_temp = $date;
                                                 $mois_temp = explode("/",$mois_temp);
                                                 $mois_temp = $mois_temp[1];
                                                 //echo "My month is".$mois_temp;
                                             }
+                                            //echo $chaine;
                                             $chaine = explode("/",$chaine);
                                             $chaine=$chaine[0];
-                                            echo "<td>".$chaine."</td>";
+                                            echo "<td>".$chaine."</td>"; 
+                                            
                                         }
                                         
                                         $nb=$nb+1;
@@ -314,11 +331,12 @@
                             
                             foreach($tabi as $cle => $valeur){
                                     if( $cle !="PREPARATION"){
+                                        // Tableau de depart
                                         if(empty($libre)==true && empty($resultat)==true){
                                             $test[$cle]=1;
                                             if($cle !== 'AUTRES'){
                                                 echo "<tr>";
-                                                echo "<td colspan='6' class='table-heading'>".$valeur[0][41]."</td>" ;
+                                                echo "<td colspan='7' class='table-heading'>".$valeur[0][41]."</td>" ;
                                                 echo "</tr>";
                                             }
                                             // On trie le tableau associe a chaque cle en fonction des dates de debuts
@@ -331,14 +349,22 @@
                                             }
                                         }
                                         else{
+                                            if($cle !== 'AUTRES'){
+                                                echo "<tr>";
+                                                echo "<td colspan='7' class='table-heading'>".$valeur[0][41]."</td>" ;
+                                                echo "</tr>";
+                                            }
                                             usort($valeur, "cmp");
                                             foreach($valeur as $ligne){
                                                 $departement = $ligne[41];
+                                                // Recherche par Domaines
                                                 if(isset($_POST["resultat"]) && empty($resultat)==false){
+                                                    
                                                     if($departement == $resultat){
                                                         tableau($ligne,1);
                                                     }
                                                 }
+                                                // Recherche Libre
                                                 else if(isset($_POST["libre"]) && empty($libre)==false){
                                                     //echo "mon resultat_1 est".$libre;
                                                     //echo "mon resultat_2 est".$data[1];

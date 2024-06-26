@@ -22,7 +22,6 @@ h2
     background-color: #9d7eb8;
     color:white;
     font-size:1.7em;
-    text-align: justify;
 }
 
 table{
@@ -36,7 +35,17 @@ th, td {
     border:1px solid black;
     text-align: justify;
     white-space: nowrap;
-    font-family: roboto;
+    font-family:roboto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    white-space: nowrap; /* Empêche le retour à la ligne automatique */
+    font-size: 0.9em;
+}
+
+td:hover {
+    overflow: visible; /* Montre le contenu complet au survol */
+    white-space: normal; /* Permet le retour à la ligne au survol */
 }
 
 th{
@@ -44,6 +53,11 @@ th{
     top: 0;
     background-color: #fff; /* Prevents header from becoming transparent */
     z-index: 100; /* Ensures the header stays on top of other content */
+}
+
+tbody tr:hover td {
+    overflow: visible; /* Montre le contenu complet au survol */
+    white-space: normal; /* Permet le retour à la ligne au survol */
 }
 
 .table-heading {
@@ -94,6 +108,13 @@ th{
 .block{
     margin-left: 11%;
     margin-right: 20%;
+    display: block
 }
 
 
+@media screen and (max-width: 600px) {
+    th, td {
+        font-size: 12px;
+        padding: 4px;
+    }
+}

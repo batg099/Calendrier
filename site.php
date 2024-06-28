@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -11,7 +12,7 @@
     <link rel="stylesheet" type="text/css" media="screen and (min-width:600px)" href="sitebureau.css">
     <link rel="stylesheet" type="text/css" media="screen and (max-width:600px)" href="filmmobile.css">
     -->
-    <link rel="stylesheet" type="text/css" media="screen" href="learneo.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="./learneo.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     
@@ -29,19 +30,17 @@
             <span class="material-symbols-outlined"> search </span>
             <input  type="text" id="libre" name="libre"  placeholder="Recherche Libre" size="74" >
 <?php
+
+   ini_set('display_errors',1);
+   ini_set('display_startup_errors',1);
+   error_reporting(E_ALL);
     // On ouvre le fichier
-    if(isset($_FILES["file"])){
-        $fichier = $_FILES['file']['tmp_name'];
-        $open = fopen($_FILES['file']['tmp_name'],"r");
-    }
-    else{
-        $open = fopen("./liste.csv","r");
-    }
+    $open = fopen("./liste.csv","r");
 
     /********** Bannissements ********/
     $indesirable=[];
     $data_ban='';
-    $open_ban = fopen("./settings/bannissement.txt","r");
+    $open_ban = fopen("./bannissement.txt","r");
     while(($data_ban = fgets($open_ban)) == true){
         // trim sert a enlever les \n
         array_push($indesirable,trim($data_ban));
@@ -62,7 +61,7 @@
         if($i>=2){ 
             array_push($calendrier,["coco"]);
 
-            $departement = $data[41];
+            $departement = $data[42];
             // On vÃ©rifie si le departement est deja present dans le menu
             if(in_array($departement,$menu) == false){
                 array_push($menu,$departement);
@@ -70,8 +69,7 @@
         }
         $i++;
     };
-
-    print '<select name="resultat">';
+    print '<select name="resultat" id="resultat" onchange="submitForm()">';
     print '<option style="text-align:center;" value="" disabled selected>Domaines</option>';
     sort($menu); // Sert a trier par ordre alphabetique
     foreach($menu as $value){
@@ -80,8 +78,15 @@
         }
     }
     print '</select>';
+    
 
-?>
+    ?>
+    <script>
+        function submitForm() {
+            document.getElementById("resultat").form.submit();
+        }
+    </script>
+
         <button type="submit" style="border: 0; background: transparent">
             <span class="material-symbols-outlined">
                 send
@@ -138,7 +143,7 @@
         </tr>
                 <?php  
                         $i=0;
-                        $open = fopen("E202406240920.csv","r");
+                        $open = fopen("./liste.csv","r");
                         $test=[0,0,0,0];
                         $indice=0;
                         $numero = 0;
@@ -159,8 +164,8 @@
                             */
                             if(count($data[3]) == 1){
                                 echo "<tr>";
-                                echo "<td>". $data[1] . "</td>";
-                                echo "<td>". $data[2] . "</td>";
+                                echo "<td>". htmlspecialchars($data[1]) . "</td>";
+                                echo "<td>". htmlspecialchars($data[2]) . "</td>";
                                 echo "<td style='text-align: center;'>". (int)($data[7])/7 ."</td>";
     
                                 $mois_temp = $data[3][0];
@@ -200,8 +205,8 @@
                             }
                             else{
                                 echo "<tr>";
-                                echo "<td>". $data[1] . "</td>";
-                                echo "<td>". $data[2] . "</td>";
+                                echo "<td>". htmlspecialchars($data[1]) . "</td>";
+                                echo "<td>". htmlspecialchars($data[2]) . "</td>";
                                 echo "<td style='text-align: center;'>". (int)($data[7])/7 ."</td>";
                                 $tab_mois=[];
                                 // Je cree un tableau qui va contenir des associations (mois) => [date1, date2 ...]
@@ -209,7 +214,7 @@
                                     $mois_temp = explode("/", $value)[1];
                                     $mois_temp = (int)$mois_temp; // Convertir en entier pour les comparaisons
                                 
-                                    if ($mois_temp >= $mois && $mois_temp <= $mois + 3) {
+                                    if ($mois_temp >= $mois && $mois_temp <= 12) {
                                         if (!isset($tab_mois[$mois_temp])) {
                                             $tab_mois[$mois_temp] = [];
                                         }
@@ -218,7 +223,7 @@
                                 }
                                 
                                 // Ajouter des mois vides si nÃ©cessaire
-                                for ($i = $mois; $i <= $mois + 3; $i++) {
+                                for ($i = $mois; $i <= 12; $i++) {
                                     if (!isset($tab_mois[$i])) {
                                         $tab_mois[$i] = [];
                                     }
@@ -264,7 +269,7 @@
                                             //echo $chaine;
                                             $chaine = explode("/",$chaine);
                                             $chaine=$chaine[0];
-                                            echo "<td style='text-align: center;'>".$chaine."</td>"; 
+                                            echo "<td style='text-align: center;'>".htmlspecialchars($chaine)."</td>"; 
                                             
                                         }
                                         
@@ -304,11 +309,11 @@
                                     $non = 0;
                                     $date = $data[3];
                                     $date = explode('/',$date);
-                                    
                                     // Si l'annee de la ligne = l'annee actuelle 
-                                    if(differenceEnMois($data[3],date('d/m/Y')) <= 3){
+                                    if(differenceEnMois($data[3],date('d/m/Y')) <= 11 && $data[5]!=='INTRA'){
                                         // On parcours notre tableau
                                         foreach($tab as $ligne){
+
                                             $index = array_search($ligne,$tab);
                                             // On veut avoir un tableau qui va contenir les dates d'un meme intitule
                                             // On le cree s'il n'existe pas deja
@@ -321,7 +326,10 @@
                                                 $non = 1;
                                             }
                                         }
-                                        if($non == 0){array_push($tab,$data);}
+                                        if($non == 0 ){
+                                            $data[3]=[$data[3]];
+                                            array_push($tab,$data);
+                                        }
                                     }
 
                                     //array_push($tab_intitule,$data[1]);
@@ -342,16 +350,18 @@
                         }; 
 
                         
-                            array_sort_by_column($tab, 41);
+                            array_sort_by_column($tab, 42);
 
                             //Fonction qui sert Ã  comparer les dates de debut dans notre dictionnaire
 
                             foreach($tab as $data){
-                                if (!isset($tabi[$data[41]])) {
-                                    $tabi[$data[41]] = [];
+                                if($data[1]!=='F-AGCC'){
+                                    if (!isset($tabi[$data[42]]) ) {
+                                        $tabi[$data[42]] = [];
+                                    }
+                                //echo "I am pushing\n";print_r($tabi[$data[41]]);
+                                    array_push($tabi[$data[42]],$data);
                                 }
-                               //echo "I am pushing\n";print_r($tabi[$data[41]]);
-                                array_push($tabi[$data[41]],$data);
                             }
                             
                             foreach($tabi as $cle => $valeur){
@@ -359,16 +369,16 @@
                                         // Tableau de depart
                                         if(empty($libre)==true && empty($resultat)==true){
                                             $test[$cle]=1;
-                                            if($cle !== 'AUTRES'){
+                                            if($cle !== 'AUTRES' && stripos($cle,'TESTS')===false){
                                                 echo "<tr>";
-                                                echo "<td colspan='7' class='table-heading'>".$valeur[0][41]."</td>" ;
+                                                echo "<td colspan='7' class='table-heading'>".$valeur[0][42]."</td>" ;
                                                 echo "</tr>";
                                             }
                                             // On trie le tableau associe a chaque cle en fonction des dates de debuts
                                             usort($valeur, "cmp");
                                             foreach($valeur as $ligne){
                                                 //echo "Moshi Moshi".$valeur[0][41];
-                                                if(stripos($ligne[2], "TEST") == false && stripos($ligne[1],'F-') !== false && $ligne[1]!=='F-AGCC' ){
+                                                if(stripos($ligne[2], "TEST") == false &&  stripos($ligne[1], "TEST") === false && stripos($ligne[1],'F-') !== false && $ligne[1]!=='F-AGCC' ){
                                                     tableau($ligne,0);
                                                 }
                                             }
@@ -377,16 +387,16 @@
                                             
                                             if($valeur == $resultat || isset($_POST["libre"]) && empty($libre)==false){
                                                 echo "<tr>";
-                                                echo "<td colspan='7' class='table-heading'>".$valeur[0][41]."</td>" ;
+                                                echo "<td colspan='7' class='table-heading'>".$valeur[0][42]."</td>" ;
                                                 echo "</tr>";
                                             }
                                             usort($valeur, "cmp");
                                             foreach($valeur as $ligne){
-                                                $departement = $ligne[41];
+                                                $departement = $ligne[42];
                                                 // Recherche par Domaines
                                                 if(isset($_POST["resultat"]) && empty($resultat)==false){
                                                     
-                                                    if($departement == $resultat &&  stripos($ligne[1],'F-') !== false && $ligne[1]!=='F-AGCC'){
+                                                    if($departement == $resultat &&  stripos($ligne[1],'F-') !== false && $ligne[1]!=='F-AGCC' ){
                                                         tableau($ligne,1);
                                                     }
                                                 }
@@ -394,7 +404,7 @@
                                                 else if(isset($_POST["libre"]) && empty($libre)==false ){
                                                     //echo "mon resultat_1 est".$libre;
                                                     //echo "mon resultat_2 est".$data[1];
-                                                    if (stripos($ligne[2], $libre) !== false || stripos($ligne[1], $libre) !== false || stripos($ligne[41], $libre) !== false){
+                                                    if (stripos($ligne[2], $libre) !== false || stripos($ligne[1], $libre) !== false || stripos($ligne[42], $libre) !== false){
                                                         //echo "mon resultat_2 est".$data[1];
                                                         //On verifie que "Test" n'est pas dans l'intitule
                                                         if(stripos($ligne[1], "TEST" && stripos($ligne[1],'F-') !== false && $ligne[1]!=='F-AGCC') === false){

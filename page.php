@@ -28,9 +28,7 @@
    if (isset($_GET['param'])){
     $url = $_GET['param'];
    }
-   else{
-    $url = 'SEBTEST';
-   }
+   else{ $url = "F-C-CCNA";   }
    //$url = $_SERVER['REQUEST_URI'];
    //echo $url;
    $url = explode('/',$url); $taille = count($url);$url = $url[$taille-1];
@@ -48,7 +46,7 @@
    $i=0;
    $limite = 0; // A SUPPRIMER PLUS TARD
    while ( ($data = fgetcsv($open,2000,";")) == true && $i>=0  ){
-        if($i>4 && $limite == 0 && $data[0]=='SEBTEST'){
+        if($i>4 && $limite == 0 && $data[0]==$url){
             $titre = $data[1].' - '.$data[0];
             $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' €ht';
             $objectifs = $data[37];
@@ -76,7 +74,7 @@
             <?php
             echo "<div class='alignement'>";
                 echo '<h2>'.$info.'</h2>';
-                echo '<p >'.'Ref : '.$data[0].'</p>';
+                echo '<p>'.'Ref : '.$data[0].'</p>';
             echo '</div>';
         echo '</div>';
         
@@ -85,7 +83,7 @@
         echo "<div class='img'> <img src='Aquali.png'  alt='Description de l'image' width='100' height='100'> </div>";
         echo "<div class='texte'>";
         if($data[35] !== '' && $data[35] !== null){
-            echo '<p id="petit_titre" >'.$data[35].'</p>';
+            echo '<p>'.$data[35].'</p>';
         }
         echo '</div>';
         echo '</div>';
@@ -115,11 +113,7 @@
             }
             echo '</nav>';
             echo '<div class=main>';
-            echo '            <br>
-            <div class="v-line">
-            </div>';
             echo '<div class=contenu>';
-
             // Contenu des sections
             for ($j = 0; $j < count($menu); $j++) {
                 if ($titre !== '' && $contenu[$j]!=='') {
@@ -137,6 +131,9 @@
             echo '</div>';
             
             ?>
+            <br>
+            <div class="v-line">
+            </div>
             
             <?php
             /**************** Dates  ***************/
@@ -146,7 +143,7 @@
             while ( ($data = fgetcsv($open,2000,";")) == true && $i>=0  ){
                 if($i>=1){
                     $date = explode('/',$data[3]);
-                    if($data[1] === 'F-C-CCNA' && $date[2]>=date('Y') && $date[1]>=date('m')){
+                    if($data[1] === $url && $date[2]>=date('Y') && $date[1]>=date('m')){
                         array_push($tab,$data[3]);
                     }
                 }

@@ -1,0 +1,108 @@
+body{
+	font-family: "roboto";
+	margin-left: 20%;
+	margin-right: 20%;
+	font-size: 14px;
+}
+.topnav {
+	background-color: #cebedc;
+	overflow: hidden;
+	justify-content: space-between;
+	display: flex;
+	width:77%;
+	
+  }
+  
+  /* Style the links inside the navigation bar */
+  .topnav a {
+	float: left;
+	color: purple;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+	
+  }
+  
+  /* Change the color of links on hover */
+  .topnav a:hover {
+	background-color: #cda4fb;
+	color:purple;
+  }
+ 
+h1,h2,h3{
+	font-family: "Century Gothic";
+}
+h3{
+	color:#e28542;
+}
+
+.info{
+	display: flex;
+    align-items: center;
+	position: relative;
+}
+
+.alignement
+{
+	margin-left: 1.5%;
+}
+
+.material-symbols-outlined{
+	font-size: 120px;
+}
+
+.img{
+	align-self: flex-end;
+	position: absolute;
+	right:0;
+}
+
+button{
+	padding : 10px;
+	padding-inline: 2%;
+	border-radius: 30px;
+	background-color: #522583;
+	color: white;
+}
+#bouton_cal{
+	background-color:#522583;
+}
+
+button:hover{
+	background-color: #cda4fb;
+}
+
+.contenu{
+	margin-right: 6%;
+}
+
+.main{
+	float:left;
+	width:80%; /*Mettre à 70%*/
+}
+
+.page{
+	margin-left:80%;
+}
+.v-line{
+	border-left: 4px  solid #cebedc;
+	height:60%;
+	left: 66%;
+	position: absolute;
+	border-radius: 30px;
+   }
+
+   .alignement_2
+   {
+	   display: flex;
+	   align-items: center;
+	   position: relative;
+	   font-size:16px;
+   }
+.texte{
+	margin-right:15%;
+}
+
+#petit_titre{
+}

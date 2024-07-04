@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     
 </head>
-<body>
+<body id="top">
 
 <?php
 
@@ -25,10 +25,13 @@
    ini_set('display_startup_errors',1);
    error_reporting(E_ALL);
    $open = fopen("./Produits.csv","r");
+   $open = fopen("./liste.csv","r");
    if (isset($_GET['param'])){
     $url = $_GET['param'];
    }
-   else{ $url = "F-C-CCNA";   }
+   else{
+    $url = 'SEBTEST';
+   }
    //$url = $_SERVER['REQUEST_URI'];
    //echo $url;
    $url = explode('/',$url); $taille = count($url);$url = $url[$taille-1];
@@ -46,7 +49,7 @@
    $i=0;
    $limite = 0; // A SUPPRIMER PLUS TARD
    while ( ($data = fgetcsv($open,2000,";")) == true && $i>=0  ){
-        if($i>4 && $limite == 0 && $data[0]==$url){
+        if($i>4 && $limite == 0 && $data[0]=='SEBTEST'){
             $titre = $data[1].' - '.$data[0];
             $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' €ht';
             $objectifs = $data[37];
@@ -74,16 +77,18 @@
             <?php
             echo "<div class='alignement'>";
                 echo '<h2>'.$info.'</h2>';
-                echo '<p>'.'Ref : '.$data[0].'</p>';
+                echo '<p >'.'Ref : '.$data[0].'</p>';
             echo '</div>';
         echo '</div>';
         
         echo "<div class='alignement_2'>";
-    
+        if($data[41]==$data[42]){
+            echo '<p id="petit_titre" >'.$data[35].'</p>';
+        }
         echo "<div class='img'> <img src='Aquali.png'  alt='Description de l'image' width='100' height='100'> </div>";
         echo "<div class='texte'>";
         if($data[35] !== '' && $data[35] !== null){
-            echo '<p>'.$data[35].'</p>';
+            echo '<p id="petit_titre" >'.$data[35].'</p>';
         }
         echo '</div>';
         echo '</div>';
@@ -114,36 +119,43 @@
             echo '</nav>';
             echo '<div class=main>';
             echo '<div class=contenu>';
+            echo '            <br>
+            <div class="v-line">
+            </div>';
+
             // Contenu des sections
+            echo '<div id="text">';
             for ($j = 0; $j < count($menu); $j++) {
                 if ($titre !== '' && $contenu[$j]!=='') {
                     // Remplacer les espaces par des tirets dans les IDs
                     $id = str_replace(' ', '-', $menu[$j]);
                     echo '<h3 id="' . $id . '">' . $menu[$j] . '</h3>';
-                    echo '<p>' . $contenu[$j] . '</p>';
+                    echo '<p >' . $contenu[$j] . '</p>';
                     echo '<hr>';
                 }
             }
+            echo '<a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#top">
+    Revenir en haut de page
+</a>';
+            echo '</div>';
             echo '</div>';
             
             echo '<div class = page> ';
             echo '</div>';
+
             echo '</div>';
             
             ?>
-            <br>
-            <div class="v-line">
-            </div>
             
             <?php
             /**************** Dates  ***************/
-            $open = fopen("./liste.csv","r");
+            
             $chaine = '';
             $tab = [];
             while ( ($data = fgetcsv($open,2000,";")) == true && $i>=0  ){
                 if($i>=1){
                     $date = explode('/',$data[3]);
-                    if($data[1] === $url && $date[2]>=date('Y') && $date[1]>=date('m')){
+                    if($data[1] === 'F-C-CCNA' && $date[2]>=date('Y') && $date[1]>=date('m')){
                         array_push($tab,$data[3]);
                     }
                 }
@@ -174,17 +186,21 @@
             ?>
             <div id='buttons'>
                 <br>
-                <button type="button" id="bouton_inscription">Comment s'inscrire</button>
+                
             </div>
+            <script>
+
+            </script>
 
             <br>
             <h3> Modalités d'accés </h3>
-            <p> Le client qui souhaite souscrire à une formation remplit une demande de
-                pré-inscription. Learneo retourne une proposition commerciale comprenant
+            <p> Le client qui souhaite souscrire à une formation remplit <a href='https://www.learneo.fr/formulaire-formation.html'>une demande de
+                pré-inscription</a>. Learneo retourne une proposition commerciale comprenant
                 les caractéristiques de formation (type, durée) et la proposition financière.
-                La commande n'est ferme et définitive qu'une fois la proposition commerciale signée par le client. </p>
+                La commande n'est ferme et définitive qu'une fois la proposition commerciale signée par le client. <br>
+                5 jours ouvrés (en moyenne) avant le début de la formation </p>
             <br>
-            <p style="font-weight:bold;"> Accessibilité aux personnes en situation de handicap </p>
+            <p style="font-weight:bold;border:1px solid black;border-radius:10px 10px;margin-left:78%;padding-right:7px"> <a href='https://www.learneo.fr/accessibilite-handicap.html'>Accessibilité aux personnes en situation de handicap </a></p>
     <script src="site.js" ></script>
 </body>
 

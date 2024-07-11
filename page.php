@@ -68,8 +68,10 @@ jQuery(function(){
    while ( ($data = fgetcsv($open,2000,";")) == true && $i>=0  ){
         if($i>4 && $limite == 0 && $data[0]==$url){
             $titre = $data[1].' - '.$data[0];
-            $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' €ht';
-            $objectifs = $data[37];
+            if(getStringBetween($data[36],'<CLC>','</CLC>')!==''){
+                $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' €ht'. ' | '.'CLC : '. getStringBetween($data[36],'<CLC>','</CLC>');
+            }
+            else { $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' €ht'; }            $objectifs = $data[37];
             $public = $data[43];
             $requis = $data[38];
             $programme = $data[40];
@@ -94,9 +96,12 @@ jQuery(function(){
             <?php
             echo "<div class='alignement'>";
                 echo '<h2>'.$info.'</h2>';
-                echo '<p >'.'Ref : '.$data[0].'</p>';
-            echo '</div>';
-        echo '</div>';
+                if(getStringBetween($data[36],'<CURVER>','</CURVER>') !==''){
+                    echo '<p >'.'Ref : '.$data[0]. ' | '. 'Version : '. getStringBetween($data[36],'<CURVER>','</CURVER>').'</p>';
+                }
+                else{ echo '<p >'.'Ref : '.$data[0].'</p>'; }                //echo getStringBetween($data[36],'<CAT>','</CAT>');
+            echo '</div>';        
+	echo '</div>';
         
         echo "<div class='alignement_2'>";
     	
@@ -107,9 +112,9 @@ jQuery(function(){
     if($j>=1){
         //echo $data_2[42].' ';
         if($data_2[1] == $url){
-            echo $data_2[42].' /';
-            echo $data_2[41].' ';
-            if(stripos($data_2[41], $data_2[42]) !== false && $data_2[41] !=='Agile SCRUM'){
+            //echo $data_2[42].' /';
+            //echo $data_2[41].' ';
+            if(stripos($data_2[41], $data_2[42]) !== false && $data_2[41] !=='Agile SCRUM' && $data_2[42]!=='CISCO'){
             $image = './images/'.$data_2[42].'.png';
             }
             else {
@@ -124,6 +129,9 @@ jQuery(function(){
                     case 'VEEAM':
                         $image = './images/VEEAM'.'.png';
 		        break;
+                    case 'CISCO':
+                        $image = './images/CISCO'.'.png';
+			break;
                     default:
                         $image = './images/'.$data_2[42].'-'.$data_2[41].'.png';            
 		}
@@ -132,7 +140,7 @@ jQuery(function(){
     }    
 $j++;
    }
-        echo "<div class='img'> <img src=$image  alt='Description de l'image' width='100' height='100'> </div>";
+        echo "<div class='img'> <img src=$image  alt='Description de l'image' width='120' height='120'> </div>";
         echo "<div class='texte'>";
         if($data[35] !== '' && $data[35] !== null){
             echo '<p id="petit_titre" >'.str_replace('_x000d_', "", $data[35]).'</p>';
@@ -232,6 +240,18 @@ $j++;
                 return ($date_1[2] < $date_2[2]) ? -1 : (($date_1[2] > $date_2[2]) ? 1 : (($date_1[1] < $date_2[1]) ? -1 : (($date_1[1] > $date_2[1]) ? 1 : (($date_1[0] < $date_2[0]) ? -1 : 1))));
 
             }
+        function getStringBetween($string, $start, $end) {
+            $startPos = strpos($string, $start);
+            if ($startPos === false) {
+                return ''; // Si la chaîne de départ n'est pas trouvée, retourner une chaîne vide
+            }
+            $startPos += strlen($start); // Avancer le début juste après la chaîne de départ
+            $endPos = strpos($string, $end, $startPos);
+            if ($endPos === false) {
+                return ''; // Si la chaîne de fin n'est pas trouvée, retourner une chaîne vide
+            }
+            return substr($string, $startPos, $endPos - $startPos);
+        }
             ?>
             <div id='buttons'>
                 <br>

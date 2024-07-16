@@ -3,8 +3,7 @@
 <html lang="fr">
 <head>
     <!-- MÃ©ta-donnÃ©es pour dÃ©finir le jeu de caractÃ¨res et la mise Ã  l'Ã©chelle -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <!-- Titre de la page -->
     <title>Calendrier - Learneo</title>
     <!-- Liens vers les fichiers CSS et JavaScript externes -->
@@ -12,10 +11,10 @@
     <link rel="stylesheet" type="text/css" media="screen and (min-width:600px)" href="sitebureau.css">
     <link rel="stylesheet" type="text/css" media="screen and (max-width:600px)" href="filmmobile.css">
     -->
-    <link rel="stylesheet" type="text/css" media="screen" href="./learneo.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="learneo.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    
+     
 </head>
 <body>
     <div class="block" >
@@ -30,17 +29,18 @@
             <span class="material-symbols-outlined"> search </span>
             <input  type="text" id="libre" name="libre"  placeholder="Recherche Libre" size="74" >
 <?php
-
+   header("Content-Type: text/html;charset=utf-8");
    ini_set('display_errors',1);
    ini_set('display_startup_errors',1);
    error_reporting(E_ALL);
     // On ouvre le fichier
-    $open = fopen("./liste.csv","r");
+   $open = fopen("liste.csv","r");
+   $open_cle = fopen("Produits.csv","r");
 
     /********** Bannissements ********/
     $indesirable=[];
     $data_ban='';
-    $open_ban = fopen("./bannissement.txt","r");
+    $open_ban = fopen("bannissement.txt","r");
     while(($data_ban = fgets($open_ban)) == true){
         // trim sert a enlever les \n
         array_push($indesirable,trim($data_ban));
@@ -69,6 +69,7 @@
         }
         $i++;
     };
+    print "<div class='domaine'>";
     print '<select name="resultat" id="resultat" onchange="submitForm()">';
     print '<option style="text-align:center;" value="" disabled selected>Domaines</option>';
     sort($menu); // Sert a trier par ordre alphabetique
@@ -78,7 +79,6 @@
         }
     }
     print '</select>';
-    
 
     ?>
     <script>
@@ -88,10 +88,11 @@
     </script>
 
         <button type="submit" style="border: 0; background: transparent">
-            <span class="material-symbols-outlined">
-                send
-            </span>
+        <span class="material-symbols-outlined">
+search_off
+</span>
         </button>
+    </div>
         </div>
     </form>
     
@@ -111,7 +112,7 @@
         <tr class="header">
             <th>RÃ©fÃ©rence</th>
             <th>IntitulÃ© de la formation</th>
-            <th>DurÃ©e (jours)</th>
+            <th>Jrs</th>
             <?php 
                     $limite = 0;
                     $date = new DateTimeImmutable();
@@ -126,16 +127,16 @@
                             5 => 'Mai',
                             6 => 'Juin',
                             7 => 'Juil',
-                            8 => 'AoÃ»t',
+                            8 => htmlspecialchars('AoÃ»t'),
                             9 => 'Sept',
                             10 => 'Oct',
                             11 => 'Nov',
-                            13 => 'Dec'
+                            12 => 'Dec'
                         ];
                     
                         return $months[$monthNumber] ?? 'Mois invalide'; // Renvoie le mois ou "Mois invalide" si le chiffre n'est pas valide
                     }
-                    while($limite <= 3){
+                    while($limite <= 5){
                         echo "<th>".getMonthName($mois + $limite)."</th>";
                         $limite = $limite + 1;
                     }
@@ -143,7 +144,7 @@
         </tr>
                 <?php  
                         $i=0;
-                        $open = fopen("./liste.csv","r");
+                        $open = fopen("liste.csv","r");
                         $test=[0,0,0,0];
                         $indice=0;
                         $numero = 0;
@@ -166,13 +167,20 @@
                                 echo "<tr>";
                                 echo "<td>". htmlspecialchars($data[1]) . "</td>";
                                 echo "<td>". htmlspecialchars($data[2]) . "</td>";
-                                echo "<td style='text-align: center;'>". (int)($data[7])/7 ."</td>";
+                                $calcul = (int)($data[7])/7;
+                                if(gettype($calcul) === "double" ){
+                                    echo "<td style='text-align: center;'>". $data[7]. " h"."</td>";
+                                }
+                                else{echo "<td style='text-align: center;'>". (int)($data[7])/7 ."</td>";}
+                                
     
                                 $mois_temp = $data[3][0];
                                 $mois_temp_bis = explode("/",$mois_temp);
                                 $mois_temp = $mois_temp_bis[1];
                                 if( $mois_temp == $mois){
                                     echo "<td style='text-align: center;'>". $mois_temp_bis[0] ."</td>";
+                                    echo "<td>"." "."</td>";
+                                    echo "<td>"." "."</td>";
                                     echo "<td>"." "."</td>";
                                     echo "<td>"." "."</td>";
                                     echo "<td>"." "."</td>";
@@ -183,6 +191,8 @@
                                         echo "<td style='text-align: center;'>". $mois_temp_bis[0] ."</td>";
                                         echo "<td>"." "."</td>";
                                         echo "<td>"." "."</td>";
+                                        echo "<td>"." "."</td>";
+                                        echo "<td>"." "."</td>";
                                         
                                     }
                                     else{
@@ -190,14 +200,32 @@
                                         if($mois_temp == ($mois+2) ){
                                             echo "<td style='text-align: center;'>". $mois_temp_bis[0] ."</td>";
                                             echo "<td>"."  "."</td>";
+                                            echo "<td>"." "."</td>";
+                                            echo "<td>"." "."</td>";
                                         }
                                         else{
                                             echo "<td>"."  "."</td>";
                                             if($mois_temp == ($mois+3) ){
                                                 echo "<td style='text-align: center;'>". $mois_temp_bis[0] ."</td>";
+                                                echo "<td>"." "."</td>";
+                                                echo "<td>"." "."</td>";
                                             }
                                             else{
                                                     echo "<td>"."  "."</td>";
+                                                    if($mois_temp == ($mois+4) ){
+                                                        echo "<td style='text-align: center;'>". $mois_temp_bis[0] ."</td>";
+                                                        echo "<td>"." "."</td>";
+                                                    }
+                                                    else{
+                                                        echo "<td>"."  "."</td>";
+                                                        if($mois_temp == ($mois+5) ){
+                                                            echo "<td style='text-align: center;'>". $mois_temp_bis[0] ."</td>";
+                                                            
+                                                        }
+                                                        else{
+                                                            echo "<td style='text-align: center;'>"." NC "."</td>";
+                                                        }
+                                                    }
                                             }
                                         }
                                     }
@@ -232,7 +260,7 @@
                                 //var_dump($tab_mois);
 
                                 foreach($tab_mois as $cle => $value){
-                                    if($nb <= 3){
+                                    if($nb <= 5){
                                         $chaine='';
                                         if($value == []){
                                             echo "<td>"."  "."</td>";
@@ -310,7 +338,7 @@
                                     $date = $data[3];
                                     $date = explode('/',$date);
                                     // Si l'annee de la ligne = l'annee actuelle 
-                                    if(differenceEnMois($data[3],date('d/m/Y')) <= 11 && $data[5]!=='INTRA'){
+                                    if(differenceEnMois($data[3],date('d/m/Y')) <= 11 && $data[5]!=='INTRA' &&  $data[6]!=='A Annuler' && $date[2]>=date('Y')){
                                         // On parcours notre tableau
                                         foreach($tab as $ligne){
 
@@ -347,8 +375,10 @@
                             }
                             // On considere que chaque element de la ligne est un element d'un tableau 
                             $i++;
-                        }; 
-
+			}; 
+			
+			                     
+			
                         
                             array_sort_by_column($tab, 42);
 
@@ -371,14 +401,15 @@
                                             $test[$cle]=1;
                                             if($cle !== 'AUTRES' && stripos($cle,'TESTS')===false){
                                                 echo "<tr>";
-                                                echo "<td colspan='7' class='table-heading'>".$valeur[0][42]."</td>" ;
+                                                echo "<td colspan='9' class='table-heading'>".$valeur[0][42]."</td>" ;
                                                 echo "</tr>";
                                             }
                                             // On trie le tableau associe a chaque cle en fonction des dates de debuts
                                             usort($valeur, "cmp");
+                                            //usort($valeur, "cmp_cle");
                                             foreach($valeur as $ligne){
                                                 //echo "Moshi Moshi".$valeur[0][41];
-                                                if(stripos($ligne[2], "TEST") == false &&  stripos($ligne[1], "TEST") === false && stripos($ligne[1],'F-') !== false && $ligne[1]!=='F-AGCC' ){
+                                                if($ligne[1]==='F-ITIL-FOUND'|| stripos($ligne[2], "TEST") == false &&  stripos($ligne[1], "TEST") === false && (stripos($ligne[1],'F-') !== false || stripos($ligne[1],'UCO-') !== false )&& $ligne[1]!=='F-AGCC' ){
                                                     tableau($ligne,0);
                                                 }
                                             }
@@ -387,16 +418,17 @@
                                             
                                             if($valeur == $resultat || isset($_POST["libre"]) && empty($libre)==false){
                                                 echo "<tr>";
-                                                echo "<td colspan='7' class='table-heading'>".$valeur[0][42]."</td>" ;
+                                                echo "<td colspan='9' class='table-heading'>".$valeur[0][42]."</td>" ;
                                                 echo "</tr>";
                                             }
-                                            usort($valeur, "cmp");
+					    usort($valeur, "cmp");
+					    //usort($valeur, "cmp_cle");
                                             foreach($valeur as $ligne){
                                                 $departement = $ligne[42];
                                                 // Recherche par Domaines
                                                 if(isset($_POST["resultat"]) && empty($resultat)==false){
                                                     
-                                                    if($departement == $resultat &&  stripos($ligne[1],'F-') !== false && $ligne[1]!=='F-AGCC' ){
+                                                    if($departement == $resultat &&  (stripos($ligne[1],'F-') !== false || stripos($ligne[1],'UCO-') !== false ) && $ligne[1]!=='F-AGCC' ){
                                                         tableau($ligne,1);
                                                     }
                                                 }
@@ -407,7 +439,7 @@
                                                     if (stripos($ligne[2], $libre) !== false || stripos($ligne[1], $libre) !== false || stripos($ligne[42], $libre) !== false){
                                                         //echo "mon resultat_2 est".$data[1];
                                                         //On verifie que "Test" n'est pas dans l'intitule
-                                                        if(stripos($ligne[1], "TEST" && stripos($ligne[1],'F-') !== false && $ligne[1]!=='F-AGCC') === false){
+                                                         if($ligne[1]==='F-ITIL-FOUND'|| stripos($ligne[2], "TEST") == false &&  stripos($ligne[1], "TEST") === false && (stripos($ligne[1],'F-') !== false || stripos($ligne[1],'UCO-') !== false )&& $ligne[1]!=='F-AGCC' ){
                                                             tableau($ligne,1);
                                                         }
                                                     }
@@ -443,6 +475,41 @@
                             }
                         
                             return ($a < $b) ? -1 : 1;
+                        }
+			 function cmp_cle($a, $b){
+                            //echo $a[50].$b[50];
+                            global $tab_cle;
+                            $valeur_a=0;
+                            $valeur_b=0;
+                            //print_r($tab_cle);
+                            foreach($tab_cle as $ligne){
+                                //echo $ligne[0].' + '.$a[0].' ';
+                                //echo $a[0];
+                                //echo 'habibi';
+                                if($ligne[0] == $a[1] && isset($ligne[1])){
+                                    //echo 'habibi';
+			                        if($ligne[1] !== ''){
+                                    	$valeur_a=$ligne[1];
+				                    }
+				                    else{
+					                    $valeur_a=1000000;
+				                    }
+                                }
+                                if($ligne[0] == $b[1]){
+			                        if($ligne[1] !== '' && isset($ligne[1])){
+                                    	$valeur_b=$ligne[1];
+				                    }
+				                    else{
+					                    $valeur_b=100000;
+				                    }
+                                }
+                            }
+                            echo $valeur_a.' + '.$valeur_b.' | ';
+                            if ($valeur_a == $valeur_b) {
+                                return 0;
+                            }
+
+                            return ($valeur_a < $valeur_b) ? -1 : 1;
                         }
                         function differenceEnMois($date1, $date2) {
                             // CrÃ©er des objets DateTime pour les deux dates

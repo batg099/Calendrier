@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <!-- MÃ©ta-donnÃ©es pour dÃ©finir le jeu de caractÃ¨res et la mise Ã  l'Ã©chelle -->
+    <!-- MÃƒÂ©ta-donnÃƒÂ©es pour dÃƒÂ©finir le jeu de caractÃƒÂ¨res et la mise ÃƒÂ  l'ÃƒÂ©chelle -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Titre de la page -->
@@ -15,21 +15,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
 </head>
 <body>
 <!--   Bouton Scroll UP   -->
 <div id="scrollUp">
-<a href="#top"><img src="to_top.png"/></a>
+<a href="#top"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#000000"><path d="m321-292 159-72 159 72 5-5-164-397-164 397 5 5ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></svg> </a>
 </div>
 <script>
 jQuery(function(){
     $(function () {
-        $(window).scroll(function () { //Fonction appelée quand on descend la page
-            if ($(this).scrollTop() > 200 ) {  // Quand on est à 200pixels du haut de page,
-                $('#scrollUp').css('right','10px'); // Replace à 10pixels de la droite l'image
+        $(window).scroll(function () { //Fonction appelÃ©e quand on descend la page
+            if ($(this).scrollTop() > 200 ) {  // Quand on est Ã  200pixels du haut de page,
+                $('#scrollUp').css('right','10px'); // Replace Ã  10pixels de la droite l'image
             } else { 
-                $('#scrollUp').removeAttr( 'style' ); // Enlève les attributs CSS affectés par javascript
+                $('#scrollUp').removeAttr( 'style' ); // EnlÃ¨ve les attributs CSS affectÃ©s par javascript
             }
         });
     });
@@ -37,12 +40,17 @@ jQuery(function(){
 </script>
 <!-- FIN Scroll UP -->
 <?php
+$excelFilePath = '../uploads/Produits.xlsx';
+$csvFilePath = '../uploads/Produits_2.csv';
+
+// Commande pour exÃ©cuter le script Python
+$command = escapeshellcmd("sudo python3 ../uploads/convert.py");
 
 ('Content-Type: text/html; charset=utf-8');
    ini_set('display_errors',1);
    ini_set('display_startup_errors',1);
    error_reporting(E_ALL);
-   $open = fopen("./uploads/Produits.csv","r");
+   $open = fopen("../uploads/Produits.csv","r");
    if (isset($_GET['param'])){
     $url = $_GET['param'];
    }
@@ -61,7 +69,7 @@ jQuery(function(){
    $methode='';
    $eval='';
    $certif='';
-   $menu = ['Objectifs','Pour qui ?','Pré-Requis','Programme','Pédagogie','Evaluation','Certification'];
+   $menu = ['Objectifs','Pour qui ?','PrÃ©-Requis','Programme','PÃ©dagogie','Evaluation','Certification'];
    $contenu = [];
    $i=0;
    $limite = 0; // A SUPPRIMER PLUS TARD
@@ -69,9 +77,9 @@ jQuery(function(){
         if($i>4 && $limite == 0 && $data[0]==$url){
             $titre = $data[1].' - '.$data[0];
             if(getStringBetween($data[36],'<CLC>','</CLC>')!==''){
-                $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' €ht'. ' | '.'CLC : '. getStringBetween($data[36],'<CLC>','</CLC>');
+                $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' â‚¬ht'. ' | '.'CLC : '. getStringBetween($data[36],'<CLC>','</CLC>');
             }
-            else { $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' €ht'; }            $objectifs = $data[37];
+            else { $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' â‚¬ht'; }            $objectifs = $data[37];
             $public = $data[43];
             $requis = $data[38];
             $programme = $data[40];
@@ -92,8 +100,52 @@ jQuery(function(){
 ?>          
         <div class='info'>
         <!-- Image Download -->
-        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#000000"><path d="M280-280h400v-60H280v60Zm197-126 158-157-42-42-85 84v-199h-60v199l-85-84-42 42 156 157Zm3 326q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></svg>
-            <?php
+        <!-- Image Download -->
+        <button id="generatePDF"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#000000"><path d="M280-280h400v-60H280v60Zm197-126 158-157-42-42-85 84v-199h-60v199l-85-84-42 42 156 157Zm3 326q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></svg>
+        </button>
+        <script>
+            document.getElementById("generatePDF").addEventListener("click", function () {
+                html2canvas(document.body, {
+                    onrendered: function (canvas) {
+                        const { jsPDF } = window.jspdf;
+                        const imgData = canvas.toDataURL('image/png');
+                        const doc = new jsPDF('p', 'mm', 'a4'); // DÃ©finition du format A4
+
+                        // Calcul des dimensions de l'image dans le PDF
+                        const imgWidth = 210;
+                        const imgHeight = canvas.height * imgWidth / canvas.width;
+
+                        let position = 0;
+                        let heightLeft = imgHeight;
+
+                        // Ajout de la premiÃ¨re page avec l'image
+                        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= 297; // Soustraction de la hauteur de la page A4
+
+                        // Ajout de pages supplÃ©mentaires si nÃ©cessaire
+                        while (heightLeft >= 0) {
+                            position = heightLeft - imgHeight;
+                            doc.addPage();
+                            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                            heightLeft -= 297;
+                        }
+
+                        // Ajout de la date en bas Ã  droite sur la derniÃ¨re page
+                        const date = new Date().toLocaleString();
+                        const totalPages = doc.internal.getNumberOfPages();
+                        for (let i = 1; i <= totalPages; i++) {
+                            doc.setPage(i);
+                            doc.setFontSize(6);
+                            doc.text(`Date de gÃ©nÃ©ration: ${date}`, 160, 285, null, null, 'right');
+                        }
+
+                        // Sauvegarde du PDF avec un nom de fichier spÃ©cifique
+                        doc.save('formation.pdf');
+                    }
+                });
+            });
+
+        </script><?php
             echo "<div class='alignement'>";
                 echo '<h2>'.$info.'</h2>';
                 if(getStringBetween($data[36],'<CURVER>','</CURVER>') !==''){
@@ -105,7 +157,7 @@ jQuery(function(){
         
         echo "<div class='alignement_2'>";
     	
-   $open_liste = fopen("./liste.csv","r");
+   $open_liste = fopen("../uploads/liste.csv","r");
    $image = '';
    $j=0;
    while ( ($data_2 = fgetcsv($open_liste,2000,";")) == true && $j>=0  ){
@@ -140,10 +192,10 @@ jQuery(function(){
     }    
 $j++;
    }
-        echo "<div class='img'> <img src=$image  alt='Description de l'image' width='120' height='120'> </div>";
+        echo "<div class='img'> <img src=$image  alt='Description de l'image' width='100' height='100'> </div>";
         echo "<div class='texte'>";
         if($data[35] !== '' && $data[35] !== null){
-            echo '<p id="petit_titre" >'.str_replace('_x000d_', "", $data[35]).'</p>';
+            echo '<p id="petit_titre" >'.str_replace('_x000D_', "", $data[35]).'</p>';
         }
         echo '</div>';
         echo '</div>';
@@ -166,7 +218,7 @@ $j++;
 
 
             <?php
-            /***********  Menu déroulant  ************/ 
+            /***********  Menu dÃ©roulant  ************/ 
             echo '<nav class="topnav">';
             for ($j = 0; $j < count($menu); $j++) {
                 // Remplacer les espaces par des tirets dans les IDs
@@ -189,7 +241,7 @@ $j++;
                     // Remplacer les espaces par des tirets dans les IDs
                     $id = str_replace(' ', '-', $menu[$j]);
                     echo '<h3 id="' . $id . '">' . $menu[$j] . '</h3>';
-                    echo '<p>' . str_replace('_x000d_', "", $contenu[$j]) . '</p>';
+                    echo '<p>' . str_replace('_x000D_', "", $contenu[$j]) . '</p>';
                     echo '<hr>';
                 }
             }
@@ -206,7 +258,7 @@ $j++;
             <?php
             /**************** Dates  ***************/
             
-            $open = fopen("./liste.csv","r");
+            $open = fopen("../uploads/liste.csv","r");
             $chaine = '';
             $tab = [];
             while ( ($data = fgetcsv($open,2000,";")) == true && $i>=0  ){
@@ -243,12 +295,12 @@ $j++;
         function getStringBetween($string, $start, $end) {
             $startPos = strpos($string, $start);
             if ($startPos === false) {
-                return ''; // Si la chaîne de départ n'est pas trouvée, retourner une chaîne vide
+                return ''; // Si la chaÃ®ne de dÃ©part n'est pas trouvÃ©e, retourner une chaÃ®ne vide
             }
-            $startPos += strlen($start); // Avancer le début juste après la chaîne de départ
+            $startPos += strlen($start); // Avancer le dÃ©but juste aprÃ¨s la chaÃ®ne de dÃ©part
             $endPos = strpos($string, $end, $startPos);
             if ($endPos === false) {
-                return ''; // Si la chaîne de fin n'est pas trouvée, retourner une chaîne vide
+                return ''; // Si la chaÃ®ne de fin n'est pas trouvÃ©e, retourner une chaÃ®ne vide
             }
             return substr($string, $startPos, $endPos - $startPos);
         }
@@ -259,14 +311,14 @@ $j++;
             </div>
 
             <br>
-            <h3> Modalités d'accés </h3>
-            <p> Le client qui souhaite souscrire à une formation remplit <a href='https://www.learneo.fr/formulaire-formation.html'>une demande de
-                pré-inscription</a>. Learneo retourne une proposition commerciale comprenant
-                les caractéristiques de formation (type, durée) et la proposition financière.
-                La commande n'est ferme et définitive qu'une fois la proposition commerciale signée par le client. <br>
-                5 jours ouvrés (en moyenne) avant le début de la formation </p>
+            <h3> ModalitÃ©s d'accÃ©s </h3>
+            <p> Le client qui souhaite souscrire Ã  une formation remplit <a href='https://www.learneo.fr/formulaire-formation.html'>une demande de
+                prÃ©-inscription</a>. Learneo retourne une proposition commerciale comprenant
+                les caractÃ©ristiques de formation (type, durÃ©e) et la proposition financiÃ¨re.
+                La commande n'est ferme et dÃ©finitive qu'une fois la proposition commerciale signÃ©e par le client. <br>
+                5 jours ouvrÃ©s (en moyenne) avant le dÃ©but de la formation </p>
             <br>
-            <p style="font-weight:bold;border:1px solid black;border-radius:10px 10px;margin-left:78%;padding-right:7px"> <a href='https://www.learneo.fr/accessibilite-handicap.html'>Accessibilité aux personnes en situation de handicap </a></p>
+            <p style="font-weight:bold;border:1px solid black;border-radius:10px 10px;margin-left:78%;padding-right:7px"> <a href='https://www.learneo.fr/accessibilite-handicap.html'>AccessibilitÃ© aux personnes en situation de handicap </a></p>
     <script src="site.js" ></script></body>
 
 </html>

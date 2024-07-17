@@ -11,40 +11,41 @@
     <link rel="stylesheet" type="text/css" media="screen and (min-width:600px)" href="sitebureau.css">
     <link rel="stylesheet" type="text/css" media="screen and (max-width:600px)" href="filmmobile.css">
     -->
-    <link rel="stylesheet" type="text/css" media="screen" href="./page.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="./test.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
     
 </head>
 <body>
+
 <!--   Bouton Scroll UP   -->
 <div id="scrollUp">
-<a href="#top"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#000000"><path d="m321-292 159-72 159 72 5-5-164-397-164 397 5 5ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></svg> </a>
+<a href="#top"><svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#000000"><path d="M320.33-288 480-360.33 639.67-288l8.33-8.33-168-406.34-168 406.34 8.33 8.33ZM480-80q-82.33 0-155.33-31.5-73-31.5-127.34-85.83Q143-251.67 111.5-324.67T80-480q0-83 31.5-156t85.83-127q54.34-54 127.34-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82.33-31.5 155.33-31.5 73-85.5 127.34Q709-143 636-111.5T480-80Zm0-66.67q139.33 0 236.33-97.33t97-236q0-139.33-97-236.33t-236.33-97q-138.67 0-236 97-97.33 97-97.33 236.33 0 138.67 97.33 236 97.33 97.33 236 97.33ZM480-480Z"/></svg> </a>
 </div>
 <script>
 jQuery(function(){
     $(function () {
-        $(window).scroll(function () { //Fonction appelÃ©e quand on descend la page
-            if ($(this).scrollTop() > 200 ) {  // Quand on est Ã  200pixels du haut de page,
-                $('#scrollUp').css('right','10px'); // Replace Ã  10pixels de la droite l'image
+        $(window).scroll(function () { //Fonction appelÃƒÂ©e quand on descend la page
+            if ($(this).scrollTop() > 200 ) {  // Quand on est ÃƒÂ  200pixels du haut de page,
+                $('#scrollUp').css('right','10px'); // Replace ÃƒÂ  10pixels de la droite l'image
             } else { 
-                $('#scrollUp').removeAttr( 'style' ); // EnlÃ¨ve les attributs CSS affectÃ©s par javascript
+                $('#scrollUp').removeAttr( 'style' ); // EnlÃƒÂ¨ve les attributs CSS affectÃƒÂ©s par javascript
             }
         });
     });
 });
 </script>
+
 <!-- FIN Scroll UP -->
 <?php
-$excelFilePath = '../uploads/Produits.xlsx';
-$csvFilePath = '../uploads/Produits_2.csv';
-
-// Commande pour exÃ©cuter le script Python
-$command = escapeshellcmd("sudo python3 ../uploads/convert.py");
 
 ('Content-Type: text/html; charset=utf-8');
    ini_set('display_errors',1);
@@ -75,11 +76,13 @@ $command = escapeshellcmd("sudo python3 ../uploads/convert.py");
    $limite = 0; // A SUPPRIMER PLUS TARD
    while ( ($data = fgetcsv($open,2000,";")) == true && $i>=0  ){
         if($i>4 && $limite == 0 && $data[0]==$url){
-            $titre = $data[1].' - '.$data[0];
-            if(getStringBetween($data[36],'<CLC>','</CLC>')!==''){
-                $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' â‚¬ht'. ' | '.'CLC : '. getStringBetween($data[36],'<CLC>','</CLC>');
+            $titre = $data[1];
+            //echo $data[36];
+            if(getStringBetween($data[36],'<points>','</points>')!==''){
+                $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' â‚¬ht'. ' | '.'CLC : '. getStringBetween($data[36],'<points>','</points>');
             }
-            else { $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' â‚¬ht'; }            $objectifs = $data[37];
+            else { $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' â‚¬ht'; }
+            $objectifs = $data[37];
             $public = $data[43];
             $requis = $data[38];
             $programme = $data[40];
@@ -99,7 +102,6 @@ $command = escapeshellcmd("sudo python3 ../uploads/convert.py");
     fclose($open);
 ?>          
         <div class='info'>
-        <!-- Image Download -->
         <!-- Image Download -->
         <button id="generatePDF"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#000000"><path d="M280-280h400v-60H280v60Zm197-126 158-157-42-42-85 84v-199h-60v199l-85-84-42 42 156 157Zm3 326q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></svg>
         </button>
@@ -139,19 +141,24 @@ $command = escapeshellcmd("sudo python3 ../uploads/convert.py");
                             doc.text(`Date de gÃ©nÃ©ration: ${date}`, 160, 285, null, null, 'right');
                         }
 
-                        // Sauvegarde du PDF avec un nom de fichier spÃ©cifique
-                        doc.save('formation.pdf');
+                        // Injection de la variable PHP dans JavaScript
+                        var variableJS = <?php echo json_encode($url); ?>;
+                        doc.save('Formation - ' + variableJS + '.pdf');
+
                     }
                 });
             });
 
-        </script><?php
+        </script>
+        <?php
             echo "<div class='alignement'>";
                 echo '<h2>'.$info.'</h2>';
+                //echo $data[36];
                 if(getStringBetween($data[36],'<CURVER>','</CURVER>') !==''){
                     echo '<p >'.'Ref : '.$data[0]. ' | '. 'Version : '. getStringBetween($data[36],'<CURVER>','</CURVER>').'</p>';
                 }
-                else{ echo '<p >'.'Ref : '.$data[0].'</p>'; }                //echo getStringBetween($data[36],'<CAT>','</CAT>');
+                else{ echo '<p >'.'Ref : '.$data[0].'</p>'; }
+                //echo getStringBetween($data[36],'<CAT>','</CAT>');
             echo '</div>';        
 	echo '</div>';
         
@@ -177,13 +184,12 @@ $command = escapeshellcmd("sudo python3 ../uploads/convert.py");
                         break;
                     case 'AGILE':
                         $image = './images/AGILE-SCRUM'.'.png';
+                    case 'CISCO':
+                        $image = './images/CISCO'.'.png';
 			break;
                     case 'VEEAM':
                         $image = './images/VEEAM'.'.png';
 		        break;
-                    case 'CISCO':
-                        $image = './images/CISCO'.'.png';
-			break;
                     default:
                         $image = './images/'.$data_2[42].'-'.$data_2[41].'.png';            
 		}
@@ -195,7 +201,7 @@ $j++;
         echo "<div class='img'> <img src=$image  alt='Description de l'image' width='100' height='100'> </div>";
         echo "<div class='texte'>";
         if($data[35] !== '' && $data[35] !== null){
-            echo '<p id="petit_titre" >'.str_replace('_x000D_', "", $data[35]).'</p>';
+            echo '<p id="petit_titre" >'.replaceX000d($data[35]).'</p>';
         }
         echo '</div>';
         echo '</div>';
@@ -241,7 +247,7 @@ $j++;
                     // Remplacer les espaces par des tirets dans les IDs
                     $id = str_replace(' ', '-', $menu[$j]);
                     echo '<h3 id="' . $id . '">' . $menu[$j] . '</h3>';
-                    echo '<p>' . str_replace('_x000D_', "", $contenu[$j]) . '</p>';
+                    echo '<p>' . replaceX000d($contenu[$j]) . '</p>';
                     echo '<hr>';
                 }
             }
@@ -292,18 +298,42 @@ $j++;
                 return ($date_1[2] < $date_2[2]) ? -1 : (($date_1[2] > $date_2[2]) ? 1 : (($date_1[1] < $date_2[1]) ? -1 : (($date_1[1] > $date_2[1]) ? 1 : (($date_1[0] < $date_2[0]) ? -1 : 1))));
 
             }
-        function getStringBetween($string, $start, $end) {
-            $startPos = strpos($string, $start);
-            if ($startPos === false) {
-                return ''; // Si la chaÃ®ne de dÃ©part n'est pas trouvÃ©e, retourner une chaÃ®ne vide
+            function getStringBetween($string, $start, $end) {
+                // Convertir les chaÃ®nes en minuscule pour les recherches insensibles Ã  la casse
+                $stringLower = strtolower($string);
+                $startLower = strtolower($start);
+                $endLower = strtolower($end);
+                
+                // Trouver la position de la chaÃ®ne de dÃ©but
+                $startPos = stripos($stringLower, $startLower);
+                if ($startPos === false) {
+                    return ''; // Si la chaÃ®ne de dÃ©part n'est pas trouvÃ©e, retourner une chaÃ®ne vide
+                }
+                $startPos += strlen($startLower); // Avancer le dÃ©but juste aprÃ¨s la chaÃ®ne de dÃ©part
+                
+                // Trouver la position de la chaÃ®ne de fin
+                $endPos = stripos($stringLower, $endLower, $startPos);
+                if ($endPos === false) {
+                    return ''; // Si la chaÃ®ne de fin n'est pas trouvÃ©e, retourner une chaÃ®ne vide
+                }
+                
+                // Extraire et retourner la sous-chaÃ®ne entre les positions de dÃ©but et de fin
+                return substr($string, $startPos, $endPos - $startPos);
             }
-            $startPos += strlen($start); // Avancer le dÃ©but juste aprÃ¨s la chaÃ®ne de dÃ©part
-            $endPos = strpos($string, $end, $startPos);
-            if ($endPos === false) {
-                return ''; // Si la chaÃ®ne de fin n'est pas trouvÃ©e, retourner une chaÃ®ne vide
+
+            function replaceX000d($input) {
+                // VÃ©rifier et remplacer '_x000d_' si prÃ©sent
+                if (strpos($input, '_x000d_') !== false) {
+                    return str_replace('_x000d_', '', $input);
+                }
+                // Sinon, vÃ©rifier et remplacer '_x000D_' si prÃ©sent
+                elseif (strpos($input, '_x000D_') !== false) {
+                    return str_replace('_x000D_', '', $input);
+                }
+                // Si aucune des chaÃ®nes n'est trouvÃ©e, retourner la chaÃ®ne d'origine
+                return $input;
             }
-            return substr($string, $startPos, $endPos - $startPos);
-        }
+
             ?>
             <div id='buttons'>
                 <br>
@@ -322,3 +352,4 @@ $j++;
     <script src="site.js" ></script></body>
 
 </html>
+

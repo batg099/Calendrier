@@ -11,14 +11,14 @@
     <link rel="stylesheet" type="text/css" media="screen and (min-width:600px)" href="sitebureau.css">
     <link rel="stylesheet" type="text/css" media="screen and (max-width:600px)" href="filmmobile.css">
     -->
-    <link rel="stylesheet" type="text/css" media="screen" href="./test.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="./styles/page.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
 
@@ -45,13 +45,29 @@ jQuery(function(){
 </script>
 
 <!-- FIN Scroll UP -->
-<?php
 
+<?php
 ('Content-Type: text/html; charset=utf-8');
    ini_set('display_errors',1);
    ini_set('display_startup_errors',1);
    error_reporting(E_ALL);
    $open = fopen("../uploads/Produits.csv","r");
+
+
+    /********** Anomalie ********/
+    $indesirable='';
+    $data_ban='';
+    $ref = [];
+    $img = [];
+    $open_ban = fopen("./settings/anomalie.txt","r");
+    while(($data_ban = fgets($open_ban)) == true){
+        // trim sert a enlever les \n
+        $indesirable = explode(',',trim($data_ban));
+        array_push($ref,$indesirable[0]);
+        array_push($img,$indesirable[1]);
+    }
+    /****************************/
+
    if (isset($_GET['param'])){
     $url = $_GET['param'];
    }
@@ -163,22 +179,17 @@ jQuery(function(){
 	echo '</div>';
         
         echo "<div class='alignement_2'>";
-    	
+    
+/***********  Images  ************/ 
    $open_liste = fopen("../uploads/liste.csv","r");
    $image = '';
    $j=0;
    while ( ($data_2 = fgetcsv($open_liste,2000,";")) == true && $j>=0  ){
     if($j>=1){
-        //echo $data_2[42].' ';
         if($data_2[1] == $url){
-            //echo $data_2[42].' /';
-            //echo $data_2[41].' ';
-            if(stripos($data_2[41], $data_2[42]) !== false && $data_2[41] !=='Agile SCRUM' && $data_2[42]!=='CISCO'){
-            $image = './images/'.$data_2[42].'.png';
-            }
-            else {
-            
-                 switch($data_2[42]){
+            // Si une rÃ©fÃ©rence n'est pas prÃ©sente dans le fichier anomalie
+            if( ($index = array_search($data_2[1],$ref)) === false ){
+                switch($data_2[42]){
                     case 'MICROSOFT':
                         $image = './images/'.$data_2[42].'.png';
                         break;
@@ -186,25 +197,32 @@ jQuery(function(){
                         $image = './images/AGILE-SCRUM'.'.png';
                     case 'CISCO':
                         $image = './images/CISCO'.'.png';
-			break;
+			            break;
                     case 'VEEAM':
                         $image = './images/VEEAM'.'.png';
-		        break;
+		                break;
                     default:
                         $image = './images/'.$data_2[42].'-'.$data_2[41].'.png';            
-		}
-	    }
+		        }
+            }
+            else{
+                // Si une rÃ©fÃ©rence est prÃ©sente dans le fichier anomalie
+                //echo $img[$index];
+                $image = './images/'.$img[$index];
+            }
         }
-    }    
+    }
 $j++;
    }
-        echo "<div class='img'> <img src=$image  alt='Description de l'image' width='100' height='100'> </div>";
-        echo "<div class='texte'>";
-        if($data[35] !== '' && $data[35] !== null){
-            echo '<p id="petit_titre" >'.replaceX000d($data[35]).'</p>';
-        }
-        echo '</div>';
-        echo '</div>';
+    echo "<div class='img'> <img src=$image  alt='Description de l'image' width='140' height='100'> </div>";
+        /*********** ******* ************/ 
+
+    echo "<div class='texte'>";
+    if($data[35] !== '' && $data[35] !== null){
+        echo '<p id="petit_titre" >'.replaceX000d($data[35]).'</p>';
+    }
+    echo '</div>';
+    echo '</div>';
 
             ?>
             <div id='buttons'>
@@ -214,10 +232,10 @@ $j++;
                 -->
             </div>
                 <script>
-        	 document.getElementById('bouton_devis').addEventListener('click', function() {
-           	 window.location.href = 'https://www.learneo.fr/formulaire-devis.html';
-        	});
-    		</script>
+                document.getElementById('bouton_devis').addEventListener('click', function() {
+                window.location.href = 'https://www.learneo.fr/formulaire-devis.html';
+            });
+            </script>
             <br>
             <br>
             
@@ -225,40 +243,41 @@ $j++;
 
             <?php
             /***********  Menu dÃ©roulant  ************/ 
-            echo '<nav class="topnav">';
-            for ($j = 0; $j < count($menu); $j++) {
-                // Remplacer les espaces par des tirets dans les IDs
-                if($contenu[$j]!==''){
-                    $id = str_replace(' ', '-', $menu[$j]);
-                    echo '<a href="#' . $id . '">' . $menu[$j] . '</a>';
-                }
-            }
-            echo '</nav>';
-            echo '<div class=main>';
-            echo '<div class=contenu>';
-            echo '            <br>
-            <div class="v-line">
-            </div>';
+                if($objectifs !== ''){
+                    echo '<nav class="topnav">';
+                    for ($j = 0; $j < count($menu); $j++) {
+                        // Remplacer les espaces par des tirets dans les IDs
+                        if($contenu[$j]!==''){
+                            $id = str_replace(' ', '-', $menu[$j]);
+                            echo '<a href="#' . $id . '">' . $menu[$j] . '</a>';
+                        }
+                    }
+                    echo '</nav>';
+                    echo '<div class=main>';
+                    echo '<div class=contenu>';
+                    echo '            <br>
+                    <div class="v-line">
+                    </div>';
 
-	    echo '<div id="text">';
-            // Contenu des sections
-            for ($j = 0; $j < count($menu); $j++) {
-                if ($titre !== '' && $contenu[$j]!=='') {
-                    // Remplacer les espaces par des tirets dans les IDs
-                    $id = str_replace(' ', '-', $menu[$j]);
-                    echo '<h3 id="' . $id . '">' . $menu[$j] . '</h3>';
-                    echo '<p>' . replaceX000d($contenu[$j]) . '</p>';
-                    echo '<hr>';
-                }
-            }
-	    echo '</div>';
-            echo '</div>';
-            
-            echo '<div class = page> ';
-            echo '</div>';
+                    echo '<div id="text">';
+                    // Contenu des sections
+                    for ($j = 0; $j < count($menu); $j++) {
+                        if ($titre !== '' && $contenu[$j]!=='') {
+                            // Remplacer les espaces par des tirets dans les IDs
+                            $id = str_replace(' ', '-', $menu[$j]);
+                            echo '<h3 id="' . $id . '">' . $menu[$j] . '</h3>';
+                            echo '<p>' . replaceX000d($contenu[$j]) . '</p>';
+                            echo '<hr>';
+                        }
+                    }
+                    echo '</div>';
+                    echo '</div>';
+                    
+                    echo '<div class = page> ';
+                    echo '</div>';
 
-            echo '</div>';
-            
+                    echo '</div>';
+                }
             ?>
             
             <?php
@@ -321,6 +340,7 @@ $j++;
                 return substr($string, $startPos, $endPos - $startPos);
             }
 
+            // Sert a remplacer les chaines '_x000d_' par du vide 
             function replaceX000d($input) {
                 // VÃ©rifier et remplacer '_x000d_' si prÃ©sent
                 if (strpos($input, '_x000d_') !== false) {
@@ -349,7 +369,7 @@ $j++;
                 5 jours ouvrÃ©s (en moyenne) avant le dÃ©but de la formation </p>
             <br>
             <p style="font-weight:bold;border:1px solid black;border-radius:10px 10px;margin-left:78%;padding-right:7px"> <a href='https://www.learneo.fr/accessibilite-handicap.html'>AccessibilitÃ© aux personnes en situation de handicap </a></p>
-    <script src="site.js" ></script></body>
+    </body>
 
 </html>
 

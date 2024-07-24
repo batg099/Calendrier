@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" media="screen and (min-width:600px)" href="sitebureau.css">
     <link rel="stylesheet" type="text/css" media="screen and (max-width:600px)" href="filmmobile.css">
     -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>	
     <link rel="stylesheet" type="text/css" media="screen" href="./styles/page.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -24,7 +25,7 @@
 
     
 </head>
-<body>
+<body style="font-family:'Roboto';">
 
 <!--   Bouton Scroll UP   -->
 <div id="scrollUp">
@@ -115,58 +116,111 @@ jQuery(function(){
         $i=$i+1;
     }
 
+    //echo "wkhtmltopdf learneo.pupitro.com/formations/page_pdf.php?param=".$url.' '.'../uploads/'.$url.'.pdf';
+    exec("wkhtmltopdf --margin-top 10 --margin-bottom 10 --margin-left 20 --margin-right 20  learneo.pupitro.com/formations/page_pdf.php?param=".$url.' '.'../uploads/'.$url.'.pdf');
     fclose($open);
 ?>          
+        
         <div class='info'>
         <!-- Image Download -->
         <button id="generatePDF"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#000000"><path d="M280-280h400v-60H280v60Zm197-126 158-157-42-42-85 84v-199h-60v199l-85-84-42 42 156 157Zm3 326q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></svg>
         </button>
         <script>
-            document.getElementById("generatePDF").addEventListener("click", function () {
-                html2canvas(document.body, {
-                    onrendered: function (canvas) {
-                        const { jsPDF } = window.jspdf;
-                        const imgData = canvas.toDataURL('image/png');
-                        const doc = new jsPDF('p', 'mm', 'a4'); // DÃ©finition du format A4
+            document.getElementById('generatePDF').addEventListener('click', function() {
+            // Nom du fichier Ã  tÃ©lÃ©charger
+            var url = <?php echo json_encode($url); ?>;
+            var filename = url+'.pdf';
+            // Effectuer une requÃªte AJAX pour rÃ©cupÃ©rer le contenu du fichier
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET','../uploads/'+url + '.pdf' , true);
+            xhr.responseType = 'blob'; // La rÃ©ponse attendue est un objet Blob (binaire)
 
-                        // Calcul des dimensions de l'image dans le PDF
-                        const imgWidth = 210;
-                        const imgHeight = canvas.height * imgWidth / canvas.width;
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // RÃ©cupÃ©rer le contenu du fichier
+                    var blob = xhr.response;
 
-                        let position = 0;
-                        let heightLeft = imgHeight;
+                    // CrÃ©er un objet de lien temporaire pour le tÃ©lÃ©chargement
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = filename;
 
-                        // Ajout de la premiÃ¨re page avec l'image
-                        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= 297; // Soustraction de la hauteur de la page A4
+                    // Simuler un clic sur l'Ã©lÃ©ment de lien pour dÃ©clencher le tÃ©lÃ©chargement
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            };
 
-                        // Ajout de pages supplÃ©mentaires si nÃ©cessaire
-                        while (heightLeft >= 0) {
-                            position = heightLeft - imgHeight;
-                            doc.addPage();
-                            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                            heightLeft -= 297;
-                        }
-
-                        // Ajout de la date en bas Ã  droite sur la derniÃ¨re page
-                        const date = new Date().toLocaleString();
-                        const totalPages = doc.internal.getNumberOfPages();
-                        for (let i = 1; i <= totalPages; i++) {
-                            doc.setPage(i);
-                            doc.setFontSize(6);
-                            doc.text(`Date de gÃ©nÃ©ration: ${date}`, 160, 285, null, null, 'right');
-                        }
-
-                        // Injection de la variable PHP dans JavaScript
-                        var variableJS = <?php echo json_encode($url); ?>;
-                        doc.save('Formation - ' + variableJS + '.pdf');
-
-                    }
-                });
-            });
+            // Envoyer la requÃªte AJAX
+            xhr.send();
+});
 
         </script>
         <?php
+            /***********  Images  ************/ 
+            $open_liste = fopen("../uploads/liste.csv","r");
+            $image = '';
+            $j=0;
+            while ( ($data_2 = fgetcsv($open_liste,2000,";")) == true && $j>=0  ){
+                if($j>=1){
+                    if($data_2[1] == $url){
+                        // Si une rÃ©fÃ©rence n'est pas prÃ©sente dans le fichier anomalie
+                        if( ($index = array_search($data_2[1],$ref)) === false ){
+                            switch($data_2[42]){
+                                case 'MICROSOFT':
+                                    $image = './images/'.$data_2[42].'.png';
+                                    break;
+                                case 'AGILE':
+                                    $image = './images/AGILE-SCRUM'.'.png';
+                                case 'CISCO':
+                                    $image = './images/CISCO'.'.png';
+                                    break;
+                                case 'VEEAM':
+                                    $image = './images/VEEAM'.'.png';
+                                    break;
+                                case 'AWS':
+                                    $image = './images/AWS'.'.png';
+                                    break;
+                                case 'ISACA':
+                                    $image = './images/ISACA'.'.png';
+                                    break;
+                                case 'UCOPIA':
+                                    $image = './images/UCOPIA'.'.png';
+                                    break;
+                                case 'GOUVERNANCE GDPR':
+				case 'GOUVERNANCE SECURITE DU SI':
+				case 'GOUVERNANCE DSI':
+                                    $image = './images/GOUVERNANCE_GDPR'.'.png';
+                                    break;
+                                case "ETAT DE L'ART":
+                                    $image = './images/ETAT_DE_LART'.'.gif';
+                                    break;
+                                case "HUAWEI":
+                                    $image = './images/HUAWEI'.'.png';
+                                    break;
+                                case "PROJECT MANAGEMENT":
+                                    $image = './images/PROJECT_MANAGEMENT'.'.webp';
+                                    break;
+                                default:
+                                    $image = './images/'.$data_2[42].'-'.$data_2[41].'.png';            
+                            }
+                        }
+                        else{
+                            // Si une rÃ©fÃ©rence est prÃ©sente dans le fichier anomalie
+                            //echo $img[$index];
+                            $image = './images/'.$img[$index];
+                        }
+                    }
+                }
+            $j++;
+            }
+            if(stripos($image,'CISCO') === false){
+                echo "<div class='img'> <img src=$image  alt='Description de l'image' width='140' height='110'> </div>";
+            }
+            else { echo "<div class='img'> <img src=$image  alt='Description de l'image' width='100' height='100'> </div>"; }
+            /*********** ******* ************/ 
+            
             echo "<div class='alignement'>";
                 echo '<h2>'.$info.'</h2>';
                 //echo $data[36];
@@ -180,42 +234,7 @@ jQuery(function(){
         
         echo "<div class='alignement_2'>";
     
-/***********  Images  ************/ 
-   $open_liste = fopen("../uploads/liste.csv","r");
-   $image = '';
-   $j=0;
-   while ( ($data_2 = fgetcsv($open_liste,2000,";")) == true && $j>=0  ){
-    if($j>=1){
-        if($data_2[1] == $url){
-            // Si une rÃ©fÃ©rence n'est pas prÃ©sente dans le fichier anomalie
-            if( ($index = array_search($data_2[1],$ref)) === false ){
-                switch($data_2[42]){
-                    case 'MICROSOFT':
-                        $image = './images/'.$data_2[42].'.png';
-                        break;
-                    case 'AGILE':
-                        $image = './images/AGILE-SCRUM'.'.png';
-                    case 'CISCO':
-                        $image = './images/CISCO'.'.png';
-			            break;
-                    case 'VEEAM':
-                        $image = './images/VEEAM'.'.png';
-		                break;
-                    default:
-                        $image = './images/'.$data_2[42].'-'.$data_2[41].'.png';            
-		        }
-            }
-            else{
-                // Si une rÃ©fÃ©rence est prÃ©sente dans le fichier anomalie
-                //echo $img[$index];
-                $image = './images/'.$img[$index];
-            }
-        }
-    }
-$j++;
-   }
-    echo "<div class='img'> <img src=$image  alt='Description de l'image' width='140' height='100'> </div>";
-        /*********** ******* ************/ 
+
 
     echo "<div class='texte'>";
     if($data[35] !== '' && $data[35] !== null){
@@ -353,6 +372,7 @@ $j++;
                 // Si aucune des chaÃ®nes n'est trouvÃ©e, retourner la chaÃ®ne d'origine
                 return $input;
             }
+            
 
             ?>
             <div id='buttons'>
@@ -369,7 +389,7 @@ $j++;
                 5 jours ouvrÃ©s (en moyenne) avant le dÃ©but de la formation </p>
             <br>
             <p style="font-weight:bold;border:1px solid black;border-radius:10px 10px;margin-left:78%;padding-right:7px"> <a href='https://www.learneo.fr/accessibilite-handicap.html'>AccessibilitÃ© aux personnes en situation de handicap </a></p>
-    </body>
+    <script src="site.js" ></script></body>
 
 </html>
 

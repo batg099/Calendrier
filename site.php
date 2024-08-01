@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <!-- MÃƒÆ’Ã‚Â©ta-donnÃƒÆ’Ã‚Â©es pour dÃƒÆ’Ã‚Â©finir le jeu de caractÃƒÆ’Ã‚Â¨res et la mise ÃƒÆ’Ã‚Â  l'ÃƒÆ’Ã‚Â©chelle -->
+    <!-- MÃƒÂ©ta-donnÃƒÂ©es pour dÃƒÂ©finir le jeu de caractÃƒÂ¨res et la mise ÃƒÂ  l'ÃƒÂ©chelle -->
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <!-- Titre de la page -->
     <title>Calendrier - Learneo</title>
@@ -111,8 +111,8 @@ search_off
 
     <table>
         <tr class="header">
-            <th>RÃ©fÃ©rence</th>
-            <th>IntitulÃ© de la formation</th>
+            <th>Référence</th>
+            <th>Intitulé de la formation</th>
             <th>Jrs</th>
             <?php 
                     $limite = 0;
@@ -128,7 +128,7 @@ search_off
                             5 => 'Mai',
                             6 => 'Juin',
                             7 => 'Juil',
-                            8 => htmlspecialchars('AoÃ»t'),
+                            8 => htmlspecialchars('Août'),
                             9 => 'Sept',
                             10 => 'Oct',
                             11 => 'Nov',
@@ -349,19 +349,19 @@ search_off
             }
 
             function differenceEnMois($date1, $date2) {
-                // CrÃƒÆ’Ã‚Â©er des objets DateTime pour les deux dates
+                // CrÃƒÂ©er des objets DateTime pour les deux dates
                 $datetime1 = DateTime::createFromFormat('d/m/Y', $date1);
                 $datetime2 = DateTime::createFromFormat('d/m/Y', $date2);
             
-                // VÃƒÆ’Ã‚Â©rifier si les objets DateTime ont ÃƒÆ’Ã‚Â©tÃƒÆ’Ã‚Â© crÃƒÆ’Ã‚Â©ÃƒÆ’Ã‚Â©s correctement
+                // VÃƒÂ©rifier si les objets DateTime ont ÃƒÂ©tÃƒÂ© crÃƒÂ©ÃƒÂ©s correctement
                 if ($datetime1 === false || $datetime2 === false) {
                     return "Erreur: Format de date invalide.";
                 }
             
-                // Calculer la diffÃƒÆ’Ã‚Â©rence entre les deux dates
+                // Calculer la diffÃƒÂ©rence entre les deux dates
                 $interval = $datetime1->diff($datetime2);
             
-                // Calculer la diffÃƒÆ’Ã‚Â©rence totale en mois
+                // Calculer la diffÃƒÂ©rence totale en mois
                 $diffEnMois = $interval->y * 12 + $interval->m;
             
                 // Ajouter les mois partiels s'il y a plus de jours dans l'une des dates
@@ -378,7 +378,7 @@ search_off
                 if ($startPos === false) {
                     return ''; // Si la chaine de depart n'est pas trouvee, retourner une chaine vide
                 }
-                $startPos += strlen($start); // Avancer le dÃƒÂ©but juste apres la chaine de dÃƒÂ©part
+                $startPos += strlen($start); // Avancer le dÃ©but juste apres la chaine de dÃ©part
                 $endPos = strpos($string, $end, $startPos);
                 if ($endPos === false) {
                     return ''; // Si la chaine de fin n'est pas trouvee, retourner une chaine vide
@@ -503,7 +503,7 @@ search_off
                             }
                             else{
                                 //print_r($value);
-                                $nombre = 0; // Va servir aÂ  savoir s'il existe plusieurs dates dans le meme mois
+                                $nombre = 0; // Va servir a  savoir s'il existe plusieurs dates dans le meme mois
                                 usort($value,"cmp");
                                 usort($value,"cmp_days"); // Sert a trier selon le jour 
                                 foreach($value as $date){

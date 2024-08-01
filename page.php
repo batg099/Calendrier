@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <!-- MÃƒÂ©ta-donnÃƒÂ©es pour dÃƒÂ©finir le jeu de caractÃƒÂ¨res et la mise ÃƒÂ  l'ÃƒÂ©chelle -->
+    <!-- MÃ©ta-donnÃ©es pour dÃ©finir le jeu de caractÃ¨res et la mise Ã  l'Ã©chelle -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Titre de la page -->
@@ -38,11 +38,11 @@
 <script>
 jQuery(function(){
     $(function () {
-        $(window).scroll(function () { //Fonction appelÃƒÂ©e quand on descend la page
-            if ($(this).scrollTop() > 200 ) {  // Quand on est ÃƒÂ  200pixels du haut de page,
-                $('#scrollUp').css('right','10px'); // Replace ÃƒÂ  10pixels de la droite l'image
+        $(window).scroll(function () { //Fonction appelÃ©e quand on descend la page
+            if ($(this).scrollTop() > 200 ) {  // Quand on est Ã  200pixels du haut de page,
+                $('#scrollUp').css('right','10px'); // Replace Ã  10pixels de la droite l'image
             } else { 
-                $('#scrollUp').removeAttr( 'style' ); // EnlÃƒÂ¨ve les attributs CSS affectÃƒÂ©s par javascript
+                $('#scrollUp').removeAttr( 'style' ); // EnlÃ¨ve les attributs CSS affectÃ©s par javascript
             }
         });
     });
@@ -91,7 +91,7 @@ jQuery(function(){
    $methode='';
    $eval='';
    $certif='';
-   $menu = ['Objectifs','Pour qui ?','PrÃ©-Requis','Programme','PÃ©dagogie','Evaluation','Certification'];
+   $menu = ['Objectifs','Pour qui ?','Pré-Requis','Programme','Pédagogie','Evaluation','Certification'];
    $contenu = [];
    $i=0;
    $limite = 0; // A SUPPRIMER PLUS TARD
@@ -100,9 +100,9 @@ jQuery(function(){
             $titre = $data[1];
             //echo $data[36];
             if(getStringBetween($data[36],'<points>','</points>')!==''){
-                $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix par personne : '.$data[4].' â‚¬ht'. ' | '.getStringBetween($data[36],'<libpoints>','</libpoints>'). ' : '. getStringBetween($data[36],'<points>','</points>');
+                $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix par personne : '.$data[4].' €ht'. ' | '.getStringBetween($data[36],'<libpoints>','</libpoints>'). ' : '. getStringBetween($data[36],'<points>','</points>');
             }
-            else { $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix par personne : '.$data[4].' â‚¬ht'; }
+            else { $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix par personne : '.$data[4].' €ht'; }
             $objectifs = $data[37];
             $public = $data[43];
             $requis = $data[38];
@@ -131,32 +131,32 @@ jQuery(function(){
         </button>
         <script>
             document.getElementById('generatePDF').addEventListener('click', function() {
-            // Nom du fichier Ã  tÃ©lÃ©charger
+            // Nom du fichier à télécharger
             var url = <?php echo json_encode($url); ?>;
             var filename = url+'.pdf';
-            // Effectuer une requÃªte AJAX pour rÃ©cupÃ©rer le contenu du fichier
+            // Effectuer une requête AJAX pour récupérer le contenu du fichier
             var xhr = new XMLHttpRequest();
             xhr.open('GET','../uploads/pdf/'+url + '.pdf' , true);
-            xhr.responseType = 'blob'; // La rÃ©ponse attendue est un objet Blob (binaire)
+            xhr.responseType = 'blob'; // La réponse attendue est un objet Blob (binaire)
 
             xhr.onload = function() {
                 if (xhr.status === 200) {
-                    // RÃ©cupÃ©rer le contenu du fichier
+                    // Récupérer le contenu du fichier
                     var blob = xhr.response;
 
-                    // CrÃ©er un objet de lien temporaire pour le tÃ©lÃ©chargement
+                    // Créer un objet de lien temporaire pour le téléchargement
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
                     link.download = filename;
 
-                    // Simuler un clic sur l'Ã©lÃ©ment de lien pour dÃ©clencher le tÃ©lÃ©chargement
+                    // Simuler un clic sur l'élément de lien pour déclencher le téléchargement
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
                 }
             };
 
-            // Envoyer la requÃªte AJAX
+            // Envoyer la requête AJAX
             xhr.send();
 });
 
@@ -169,7 +169,7 @@ jQuery(function(){
             while ( ($data_2 = fgetcsv($open_liste,2000,";")) == true && $j>=0  ){
                 if($j>=1){
                     if($data_2[1] == $url){
-                        // Si une rÃ©fÃ©rence n'est pas prÃ©sente dans le fichier anomalie
+                        // Si une référence n'est pas présente dans le fichier anomalie
                         if( ($index = array_search($data_2[1],$ref)) === false ){
                             switch($data_2[42]){
                                 case 'MICROSOFT':
@@ -211,7 +211,7 @@ jQuery(function(){
                             }
                         }
                         else{
-                            // Si une rÃ©fÃ©rence est prÃ©sente dans le fichier anomalie
+                            // Si une référence est présente dans le fichier anomalie
                             //echo $img[$index];
                             $image = './images/'.$img[$index];
                         }
@@ -274,7 +274,7 @@ jQuery(function(){
 
 
             <?php
-            /***********  Menu dÃ©roulant  ************/ 
+            /***********  Menu déroulant  ************/ 
                 if($objectifs !== ''){
                     echo '<nav class="topnav">';
                     for ($j = 0; $j < count($menu); $j++) {
@@ -302,13 +302,13 @@ jQuery(function(){
                             echo '<hr>';
                         }
                     }
-		    echo "<a id='bouton_inscription'><h3> ModalitÃ©s d'accÃ©s & inscription </h3></a>";
-		    echo "<p>Le client qui souhaite souscrire Ã  une formation remplit <a target='_blank' rel='noopener' rel='noreferrer'  href='https://www.learneo.fr/formulaire-formation.html'>une demande de prÃ©-inscription</a>. Learneo retourne une proposition commerciale comprenant
-                les caractÃ©ristiques de formation (type, durÃ©e) et la proposition financiÃ¨re.
-                La commande n'est ferme et dÃ©finitive qu'une fois la proposition commerciale signÃ©e par le client. <br>
-                5 jours ouvrÃ©s (en moyenne) avant le dÃ©but de la formation </p>";
+		    echo "<a id='bouton_inscription'><h3> Modalités d'accés & inscription </h3></a>";
+		    echo "<p>Le client qui souhaite souscrire à une formation remplit <a target='_blank' rel='noopener' rel='noreferrer'  href='https://www.learneo.fr/formulaire-formation.html'>une demande de pré-inscription</a>. Learneo retourne une proposition commerciale comprenant
+                les caractéristiques de formation (type, durée) et la proposition financière.
+                La commande n'est ferme et définitive qu'une fois la proposition commerciale signée par le client. <br>
+                5 jours ouvrés (en moyenne) avant le début de la formation </p>";
 		    echo '<hr>';
-            	    echo "<p style='font-weight:bold;padding-right:7px'> <a target='_blank' rel='noopener' rel='noreferrer'  href='https://www.learneo.fr/accessibilite-handicap.html'>AccessibilitÃ© aux personnes en situation de handicap </a></p>
+            	    echo "<p style='font-weight:bold;padding-right:7px'> <a target='_blank' rel='noopener' rel='noreferrer'  href='https://www.learneo.fr/accessibilite-handicap.html'>Accessibilité aux personnes en situation de handicap </a></p>
             <p> Contact : 01.53.20.37.00 | info@learneo.fr  </p>";
 
                     echo '</div>';
@@ -366,39 +366,39 @@ jQuery(function(){
 
             }
             function getStringBetween($string, $start, $end) {
-                // Convertir les chaÃ®nes en minuscule pour les recherches insensibles Ã  la casse
+                // Convertir les chaînes en minuscule pour les recherches insensibles à la casse
                 $stringLower = strtolower($string);
                 $startLower = strtolower($start);
                 $endLower = strtolower($end);
                 
-                // Trouver la position de la chaÃ®ne de dÃ©but
+                // Trouver la position de la chaîne de début
                 $startPos = stripos($stringLower, $startLower);
                 if ($startPos === false) {
-                    return ''; // Si la chaÃ®ne de dÃ©part n'est pas trouvÃ©e, retourner une chaÃ®ne vide
+                    return ''; // Si la chaîne de départ n'est pas trouvée, retourner une chaîne vide
                 }
-                $startPos += strlen($startLower); // Avancer le dÃ©but juste aprÃ¨s la chaÃ®ne de dÃ©part
+                $startPos += strlen($startLower); // Avancer le début juste après la chaîne de départ
                 
-                // Trouver la position de la chaÃ®ne de fin
+                // Trouver la position de la chaîne de fin
                 $endPos = stripos($stringLower, $endLower, $startPos);
                 if ($endPos === false) {
-                    return ''; // Si la chaÃ®ne de fin n'est pas trouvÃ©e, retourner une chaÃ®ne vide
+                    return ''; // Si la chaîne de fin n'est pas trouvée, retourner une chaîne vide
                 }
                 
-                // Extraire et retourner la sous-chaÃ®ne entre les positions de dÃ©but et de fin
+                // Extraire et retourner la sous-chaîne entre les positions de début et de fin
                 return substr($string, $startPos, $endPos - $startPos);
             }
 
             // Sert a remplacer les chaines '_x000d_' par du vide 
             function replaceX000d($input) {
-                // VÃ©rifier et remplacer '_x000d_' si prÃ©sent
+                // Vérifier et remplacer '_x000d_' si présent
                 if (strpos($input, '_x000d_') !== false) {
                     return str_replace('_x000d_', '', $input);
                 }
-                // Sinon, vÃ©rifier et remplacer '_x000D_' si prÃ©sent
+                // Sinon, vérifier et remplacer '_x000D_' si présent
                 elseif (strpos($input, '_x000D_') !== false) {
                     return str_replace('_x000D_', '', $input);
                 }
-                // Si aucune des chaÃ®nes n'est trouvÃ©e, retourner la chaÃ®ne d'origine
+                // Si aucune des chaînes n'est trouvée, retourner la chaîne d'origine
                 return $input;
             }
             

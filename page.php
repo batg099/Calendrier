@@ -11,8 +11,12 @@
     <link rel="stylesheet" type="text/css" media="screen and (min-width:600px)" href="sitebureau.css">
     <link rel="stylesheet" type="text/css" media="screen and (max-width:600px)" href="filmmobile.css">
     -->
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>	
-    <link rel="stylesheet" type="text/css" media="screen" href="./styles/page.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="./styles/page.css" media="screen" />
+    <link rel="stylesheet" type="text/css" media="screen" href="./styles/mobile.css">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
@@ -96,9 +100,9 @@ jQuery(function(){
             $titre = $data[1];
             //echo $data[36];
             if(getStringBetween($data[36],'<points>','</points>')!==''){
-                $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' â‚¬ht'. ' | '.'CLC : '. getStringBetween($data[36],'<points>','</points>');
+                $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix par personne : '.$data[4].' â‚¬ht'. ' | '.getStringBetween($data[36],'<libpoints>','</libpoints>'). ' : '. getStringBetween($data[36],'<points>','</points>');
             }
-            else { $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix : '.$data[4].' â‚¬ht'; }
+            else { $info = $data[3].' jours'.' ('.$data[2].' heures)'.' | '.'Prix par personne : '.$data[4].' â‚¬ht'; }
             $objectifs = $data[37];
             $public = $data[43];
             $requis = $data[38];
@@ -108,7 +112,7 @@ jQuery(function(){
             $certif = $data[67]; // A VERIFIER !!!!!
             array_push($contenu,$objectifs,$public,$requis,$programme,$methode,$eval,$certif,'...');
             //var_dump($contenu);
-            echo '<h1>'.$titre.'</h1>';
+            //echo '<h1>'.$titre.'</h1>';
             break;
             $limite++ ; // A SUPPRIMER PLUS TARD
 
@@ -117,13 +121,13 @@ jQuery(function(){
     }
 
     //echo "wkhtmltopdf learneo.pupitro.com/formations/page_pdf.php?param=".$url.' '.'../uploads/'.$url.'.pdf';
-    exec("wkhtmltopdf --margin-top 10 --margin-bottom 10 --margin-left 20 --margin-right 20  learneo.pupitro.com/formations/page_pdf.php?param=".$url.' '.'../uploads/'.$url.'.pdf');
+    exec("wkhtmltopdf --margin-top 10 --margin-bottom 10 --margin-left 20 --margin-right 20   https://learneo.pupitro.com/formations/page_pdf.php?param=".$url.' '.'../uploads/pdf/'.$url.'.pdf');
     fclose($open);
 ?>          
         
         <div class='info'>
         <!-- Image Download -->
-        <button id="generatePDF"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#000000"><path d="M280-280h400v-60H280v60Zm197-126 158-157-42-42-85 84v-199h-60v199l-85-84-42 42 156 157Zm3 326q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z"/></svg>
+        <button id="generatePDF"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#522583"><path d="M480-313 287-506l43-43 120 120v-371h60v371l120-120 43 43-193 193ZM220-160q-24 0-42-18t-18-42v-143h60v143h520v-143h60v143q0 24-18 42t-42 18H220Z"/></svg>
         </button>
         <script>
             document.getElementById('generatePDF').addEventListener('click', function() {
@@ -132,7 +136,7 @@ jQuery(function(){
             var filename = url+'.pdf';
             // Effectuer une requÃªte AJAX pour rÃ©cupÃ©rer le contenu du fichier
             var xhr = new XMLHttpRequest();
-            xhr.open('GET','../uploads/'+url + '.pdf' , true);
+            xhr.open('GET','../uploads/pdf/'+url + '.pdf' , true);
             xhr.responseType = 'blob'; // La rÃ©ponse attendue est un objet Blob (binaire)
 
             xhr.onload = function() {
@@ -216,9 +220,9 @@ jQuery(function(){
             $j++;
             }
             if(stripos($image,'CISCO') === false){
-                echo "<div class='img'> <img src=$image  alt='Description de l'image' width='140' height='110'> </div>";
+               // echo "<div class='img'> <img src=$image  alt='Description de l'image' width='140' height='110'> </div>";
             }
-            else { echo "<div class='img'> <img src=$image  alt='Description de l'image' width='100' height='100'> </div>"; }
+	    //else { echo "<div class='img'> <img src=$image  alt='Description de l'image' width='100' height='100'> </div>";}
             /*********** ******* ************/ 
             
             echo "<div class='alignement'>";
@@ -249,11 +253,20 @@ jQuery(function(){
                 <button type="button" id="bouton_devis">Recevoir un devis</button>
                 <!-- <a href=#bouton_calendrier><button type="button" id="bouton_cal" ><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e8eaed"><path d="M216-96q-29.7 0-50.85-21.5Q144-139 144-168v-528q0-29 21.15-50.5T216-768h72v-96h72v96h240v-96h72v96h72q29.7 0 50.85 21.5Q816-725 816-696v528q0 29-21.15 50.5T744-96H216Zm0-72h528v-360H216v360Zm0-432h528v-96H216v96Zm0 0v-96 96Zm264.21 216q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm-156 0q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm312 0q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm-156 144q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm-156 0q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm312 0q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Z"/></svg>  Voir les prochaines dates</button> </a>
                 -->
+                <a  href="#bouton_inscription"><button  type="button" >Comment s'inscrire ? </button></a>
             </div>
-                <script>
-                document.getElementById('bouton_devis').addEventListener('click', function() {
-                window.location.href = 'https://www.learneo.fr/formulaire-devis.html';
-            });
+    		<script>
+    		var url = <?php echo json_encode($url); ?>;
+                document.getElementById('bouton_intra').addEventListener('click', function() {
+
+		     //window.open('https://www.learneo.fr/formulaire-devis.html?nom-cours='+url);
+		     window.open("http://172.20.42.10/demande-formation-intra-standard?formation="+url);
+                 });
+    		
+    		document.getElementById('bouton_devis').addEventListener('click', function() {
+		     window.open("http://172.20.42.10/demande-devis-inter?formation=" + url);
+		});
+
             </script>
             <br>
             <br>
@@ -289,6 +302,15 @@ jQuery(function(){
                             echo '<hr>';
                         }
                     }
+		    echo "<a id='bouton_inscription'><h3> ModalitÃ©s d'accÃ©s & inscription </h3></a>";
+		    echo "<p>Le client qui souhaite souscrire Ã  une formation remplit <a target='_blank' rel='noopener' rel='noreferrer'  href='https://www.learneo.fr/formulaire-formation.html'>une demande de prÃ©-inscription</a>. Learneo retourne une proposition commerciale comprenant
+                les caractÃ©ristiques de formation (type, durÃ©e) et la proposition financiÃ¨re.
+                La commande n'est ferme et dÃ©finitive qu'une fois la proposition commerciale signÃ©e par le client. <br>
+                5 jours ouvrÃ©s (en moyenne) avant le dÃ©but de la formation </p>";
+		    echo '<hr>';
+            	    echo "<p style='font-weight:bold;padding-right:7px'> <a target='_blank' rel='noopener' rel='noreferrer'  href='https://www.learneo.fr/accessibilite-handicap.html'>AccessibilitÃ© aux personnes en situation de handicap </a></p>
+            <p> Contact : 01.53.20.37.00 | info@learneo.fr  </p>";
+
                     echo '</div>';
                     echo '</div>';
                     
@@ -299,6 +321,13 @@ jQuery(function(){
                 }
             ?>
             
+              <br>
+              <!-- Image Calendrier -->
+             <h3> Dates
+                <a href ='https://www.learneo.fr/formations/calendriers-formations.html' style='text-decoration:none;'><svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="48px" fill="#321D71"><path d="M180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Zm300 230q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z"/></svg>
+                </a>
+            </h3>
+
             <?php
             /**************** Dates  ***************/
             
@@ -316,11 +345,11 @@ jQuery(function(){
             //echo '<p>' . "habibibiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" . '</p>';
             usort($tab, "compare_dates");
   
-            echo '<h3 id="bouton_calendrier">' . 'Dates' . '</h3>';
             echo '<ul>';
             foreach($tab as $element){
-                echo '<li>' . $element . '</li> ';
-            }
+                echo '<li style="font-size:18px"><a target="_blank" rel="noopener" rel="noreferrer"  href="http://172.20.42.10/demande-devis-inter/?formation=' . $url . '&date=' . $element . '">' . $element . '</a></li>';
+		echo '<br>';
+	    }
             echo '</ul>';
 
             fclose($open);
@@ -375,20 +404,9 @@ jQuery(function(){
             
 
             ?>
-            <div id='buttons'>
-                <br>
-                <button type="button" id="bouton_inscription">Comment s'inscrire</button>
-            </div>
 
             <br>
-            <h3> ModalitÃ©s d'accÃ©s </h3>
-            <p> Le client qui souhaite souscrire Ã  une formation remplit <a href='https://www.learneo.fr/formulaire-formation.html'>une demande de
-                prÃ©-inscription</a>. Learneo retourne une proposition commerciale comprenant
-                les caractÃ©ristiques de formation (type, durÃ©e) et la proposition financiÃ¨re.
-                La commande n'est ferme et dÃ©finitive qu'une fois la proposition commerciale signÃ©e par le client. <br>
-                5 jours ouvrÃ©s (en moyenne) avant le dÃ©but de la formation </p>
             <br>
-            <p style="font-weight:bold;border:1px solid black;border-radius:10px 10px;margin-left:78%;padding-right:7px"> <a href='https://www.learneo.fr/accessibilite-handicap.html'>AccessibilitÃ© aux personnes en situation de handicap </a></p>
     <script src="site.js" ></script></body>
 
 </html>

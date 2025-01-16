@@ -1,6 +1,6 @@
 C'est un projet de calendrier que j'ai réalisé pour la société Learneo: https://learneo.fr/formation-it-et-management/calendrier-inter/.
 
-Certains employés de l'entreprise avait beaucoup de tâches répétitives (ex: A chaque fois qu'une date de formation était programmé, un employé était obligé de la crée manuellement sur le site).
+Certains employés de l'entreprise avait beaucoup de tâches répétitives (ex: A chaque fois qu'une date de formation était programmé, un employé était obligé de l'entrer manuellement sur le site).
 
 L'idée est de parser un fichier Excel qui contient toutes ces informations (Date de début, fin, id ...).
 

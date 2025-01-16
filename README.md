@@ -6,4 +6,4 @@ L'idée est de parser un fichier Excel qui contient toutes ces informations (Dat
 
 En cliquant sur l'une formation, cela nous emmene vers une page généré automatiquement (que j'ai codé) qui change suivant la formation (cette page se base sur un second fichier Excel).
 
-Projet realisé en PHP/CSS
+Projet réalisé en PHP/CSS
